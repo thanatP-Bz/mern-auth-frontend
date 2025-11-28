@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { registerUser } from "../api/registerApi";
+import { loginUser } from "../api/loginApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-const Register = () => {
+const Login = () => {
   const { dispatch } = useAuthContext();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -20,10 +19,12 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const user = await registerUser(form.name, form.email, form.password);
-      dispatch({ type: "REGISTER", payload: user });
+      const user = await loginUser(form.email, form.password);
+      dispatch({ type: "LOGIN", payload: user });
       localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
+
+      console.log(user);
     } catch (error) {
       console.log(error);
     }
@@ -31,16 +32,7 @@ const Register = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>register</h2>
-
-      <input
-        type="name"
-        name="name"
-        value={form.name}
-        placeholder="name"
-        onChange={handleChange}
-        required
-      />
+      <h2>Login</h2>
 
       <input
         type="email"
@@ -60,9 +52,9 @@ const Register = () => {
         required
       />
 
-      <button type="submit">Register</button>
+      <button type="submit">Log In</button>
     </form>
   );
 };
 
-export default Register;
+export default Login;

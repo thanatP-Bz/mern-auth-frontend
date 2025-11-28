@@ -1,18 +1,18 @@
-import api from "axios";
+import axios from "axios";
 import type { AuthUser } from "../types/authUser";
 
-export const registerUser = async (
-  name: string,
+export const loginUser = async (
   email: string,
   password: string
 ): Promise<AuthUser> => {
-  const res = await api.post<AuthUser>(
-    "http://localhost:4004/api/auth/register",
+  const res = await axios.post<AuthUser>(
+    "http://localhost:4004/api/auth/login",
     {
-      name,
       email,
       password,
     }
   );
+
+  console.log(res);
   return res.data;
 };

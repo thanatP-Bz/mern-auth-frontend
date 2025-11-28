@@ -8,10 +8,15 @@ export interface AuthState {
   user: User | null;
 }
 
-export type AuthAction = { type: "LOGIN"; payload: User } | { type: "LOGOUT" };
+export type AuthAction =
+  | { type: "REGISTER"; payload: User }
+  | { type: "LOGIN"; payload: User }
+  | { type: "LOGOUT" };
 
 export const authReducer = (state: AuthState, action: AuthAction) => {
   switch (action.type) {
+    case "REGISTER":
+      return { user: action.payload };
     case "LOGIN":
       return { user: action.payload };
     case "LOGOUT":
