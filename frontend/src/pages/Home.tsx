@@ -1,26 +1,28 @@
 import { useEffect } from "react";
 import taskApi from "../api/taskApi";
-import type { Task } from "../reducer/taskReducer";
 import { useTaskContext } from "../hooks/useTaskContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Home = () => {
   const { tasks, dispatch } = useTaskContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchTasks = async () => {
+      if (!user) return;
       try {
-        const response = await taskApi.get<Task[]>("/");
-
+        const taskData = await taskApi(user.token);
+        console.log(taskData);
         dispatch({
           type: "SET_TASKS",
-          payload: response.data,
+          payload: taskData.data,
         });
       } catch (error) {
         console.log("Failed to fetch tasks", error);
       }
     };
     fetchTasks();
-  }, [dispatch]);
+  }, [user, dispatch]);
 
   return (
     <ul>

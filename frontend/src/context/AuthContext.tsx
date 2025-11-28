@@ -14,7 +14,10 @@ interface AuthContextType extends AuthState {
   dispatch: Dispatch<AuthAction>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 interface AuthContextProviderProps {
   children: ReactNode;
