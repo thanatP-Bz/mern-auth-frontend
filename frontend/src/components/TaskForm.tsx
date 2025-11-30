@@ -2,11 +2,12 @@ import { useState } from "react";
 import { createTask } from "../api/taskApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useTaskContext } from "../hooks/useTaskContext";
+import type { Task } from "../reducer/taskReducer";
 
 const TaskForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [completed, setCompleted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const { user } = useAuthContext();
   const { dispatch } = useTaskContext();
@@ -14,21 +15,25 @@ const TaskForm = () => {
   const submitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(user);
-
     if (!user) return console.log("no auth");
 
     try {
-      const task = await createTask(user.token, {
+      const taskFromApi = await createTask(user.token, {
         title,
         description,
-        completed,
+        isCompleted,
       });
+      const task: Task = {
+        id: taskFromApi._id,
+        title: taskFromApi.title,
+        description: taskFromApi.description,
+        isCompleted: taskFromApi.isCompleted,
+      };
 
       dispatch({ type: "ADD_TASK", payload: task });
       setTitle("");
       setDescription("");
-      setCompleted(false);
+      setIsCompleted(false);
     } catch (error) {
       console.log(error);
     }
@@ -53,8 +58,8 @@ const TaskForm = () => {
       <label>
         <input
           type="checkbox"
-          checked={completed}
-          onChange={(e) => setCompleted(e.target.checked)}
+          checked={isCompleted}
+          onChange={(e) => setIsCompleted(e.target.checked)}
         />
         Completed
       </label>

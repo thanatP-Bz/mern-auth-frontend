@@ -1,12 +1,13 @@
 export interface Task {
   id: string;
   title: string;
-  discription: string;
-  completed: boolean;
+  description: string;
+  isCompleted: boolean;
 }
 
 export interface TaskState {
   tasks: Task[];
+  currentTask: Task | null;
 }
 
 export type TaskAction =
@@ -19,18 +20,18 @@ export type TaskAction =
 export const taskReducer = (state: TaskState, action: TaskAction) => {
   switch (action.type) {
     case "ADD_TASK":
-      return { ...state, task: action.payload };
+      return { ...state, tasks: [action.payload, ...(state.tasks || [])] };
 
     case "SET_TASKS":
-      return { ...state, task: action.payload };
+      return { ...state, tasks: action.payload };
 
     case "SET_CURRENT_TASK":
-      return { ...state, task: action.payload };
+      return { ...state, currentTask: action.payload };
 
     case "UPDATE_TASK":
       return {
         ...state,
-        task: state.tasks.map((task) =>
+        tasks: state.tasks.map((task) =>
           task.id === action.payload.id ? action.payload : task
         ),
       };
@@ -38,7 +39,10 @@ export const taskReducer = (state: TaskState, action: TaskAction) => {
     case "REMOVE_TASK":
       return {
         ...state,
-        task: state.tasks.filter((task) => task.id !== action.payload),
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
+
+    default:
+      return state;
   }
 };

@@ -16,6 +16,7 @@ interface TaskContextType extends TaskState {
 
 const initialState: TaskState = {
   tasks: [],
+  currentTask: null,
 };
 // eslint-disable-next-line react-refresh/only-export-components
 export const TaskContext = createContext<TaskContextType | undefined>(
@@ -28,8 +29,6 @@ interface AuthContextProviderProps {
 
 export const TaskContextProvider = ({ children }: AuthContextProviderProps) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
-
-  console.log("Auth Context state:", state);
 
   return (
     <TaskContext.Provider value={{ ...state, dispatch }}>
