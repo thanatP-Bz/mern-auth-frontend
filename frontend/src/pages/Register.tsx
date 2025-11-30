@@ -27,6 +27,8 @@ const Register = () => {
     } catch (error) {
       console.log(error);
     }
+
+    setForm({ name: "", email: "", password: "" });
   };
 
   return (

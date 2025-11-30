@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import taskApi from "../api/taskApi";
+import { setTask } from "../api/taskApi";
+import TaskForm from "../components/TaskForm";
 import { useTaskContext } from "../hooks/useTaskContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
@@ -11,8 +12,8 @@ const Home = () => {
     const fetchTasks = async () => {
       if (!user) return;
       try {
-        const taskData = await taskApi(user.token);
-        console.log(taskData);
+        const taskData = await setTask(user.token);
+
         dispatch({
           type: "SET_TASKS",
           payload: taskData.data,
@@ -25,11 +26,16 @@ const Home = () => {
   }, [user, dispatch]);
 
   return (
-    <ul>
-      {tasks.map((task) => (
-        <li key={task.id}>{task.title}</li>
-      ))}
-    </ul>
+    <div>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>{task.title}</li>
+        ))}
+        <li>this is home page</li>
+      </ul>
+
+      <TaskForm />
+    </div>
   );
 };
 

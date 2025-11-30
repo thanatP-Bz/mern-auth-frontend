@@ -23,11 +23,11 @@ const Login = () => {
       dispatch({ type: "LOGIN", payload: user });
       localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
-
-      console.log(user);
     } catch (error) {
       console.log(error);
     }
+
+    setForm({ email: "", password: "" });
   };
 
   return (

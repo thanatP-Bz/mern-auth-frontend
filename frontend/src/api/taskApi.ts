@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const taskApi = async (token: string) => {
+export const setTask = async (token: string) => {
   const res = await axios.get("http://localhost:4004/api/task/", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -10,4 +10,15 @@ const taskApi = async (token: string) => {
   return res.data;
 };
 
-export default taskApi;
+export const createTask = async (
+  token: string,
+  data: { title: string; description: string; completed: boolean }
+) => {
+  const res = await axios.post("http://localhost:4004/api/task/", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};
