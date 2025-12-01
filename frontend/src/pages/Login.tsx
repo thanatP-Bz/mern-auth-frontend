@@ -21,7 +21,7 @@ const Login = () => {
     try {
       const user = await loginUser(form.email, form.password);
       dispatch({ type: "LOGIN", payload: user });
-      /* localStorage.setItem("user", JSON.stringify(user)); */
+      localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
     } catch (error) {
       console.log(error);

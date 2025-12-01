@@ -15,7 +15,7 @@ const TaskForm = () => {
   const submitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!user) return console.log("no auth");
+    if (!user) return;
 
     try {
       const taskFromApi = await createTask(user.token, {
