@@ -1,12 +1,7 @@
 import axios from "axios";
 import type { Task } from "../reducer/taskReducer";
-
-interface TaskApiResponse {
-  _id: string;
-  title: string;
-  description: string;
-  isCompleted: boolean;
-}
+import type { TaskApiResponse } from "../types/taskApiResponse";
+import { TaskMapper } from "../types/taskMapper";
 
 export const fetchTasks = async (token: string): Promise<Task[]> => {
   const res = await axios.get("http://localhost:4004/api/task/", {
@@ -15,13 +10,7 @@ export const fetchTasks = async (token: string): Promise<Task[]> => {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res.data.map((task: any) => ({
-    id: task._id,
-    title: task.title,
-    description: task.description,
-    completed: task.isCompleted,
-  }));
+  return res.data.map(TaskMapper);
 };
 
 export const createTask = async (

@@ -48,8 +48,7 @@ const TaskForm = () => {
         placeholder="title"
       />
 
-      <input
-        type="text"
+      <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="discription"

@@ -22,11 +22,6 @@ const Home = () => {
     getTasks();
   }, [user, dispatch]);
 
-  console.log(
-    "Tasks in Home:",
-    tasks.map((t) => <div>{t.id}</div>)
-  );
-
   return (
     <div>
       {tasks.map((task) => (
