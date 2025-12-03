@@ -3,6 +3,7 @@ import { fetchTasks } from "../api/taskApi";
 import { useTaskContext } from "../hooks/useTaskContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import TaskForm from "../components/TaskForm";
+import TaskCard from "../components/TaskCard";
 
 const Home = () => {
   const { tasks, dispatch } = useTaskContext();
@@ -24,13 +25,7 @@ const Home = () => {
 
   return (
     <div>
-      {tasks.map((task) => (
-        <div key={task.id}>
-          <h4>{task.title}</h4>
-          <p>{task.description}</p>
-          <p>Status: {task.isCompleted ? "✅ Completed" : "❌ Pending"}</p>
-        </div>
-      ))}
+      <TaskCard tasks={tasks} />
 
       <TaskForm />
     </div>

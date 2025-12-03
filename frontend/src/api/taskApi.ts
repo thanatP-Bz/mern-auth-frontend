@@ -30,3 +30,17 @@ export const createTask = async (
     isCompleted: res.data.task.isCompleted,
   };
 };
+
+export const fetchCurrentTask = async (
+  id: string,
+  token: string
+): Promise<Task> => {
+  const res = await axios.get<TaskApiResponse>(
+    `http://localhost:4004/api/task/${id}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  return TaskMapper(res.data);
+};
