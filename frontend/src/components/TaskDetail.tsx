@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router";
 import { useAuthContext } from "../hooks/useAuthContext";
 import type { Task } from "../reducer/taskReducer";
 import { fetchCurrentTask } from "../api/taskApi";
+import RenderMessage from "./RenderMessage";
 
 const TaskDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,41 +32,11 @@ const TaskDetail = () => {
     loadTask();
   }, [id, user]);
 
-  if (!user) {
-    return (
-      <div>
-        <p>Please login to view the task</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    );
-  }
+  if (!user) return <RenderMessage message="Please login to view the task" />;
+  if (loading) return <RenderMessage message="Loading..." />;
+  if (error) return <RenderMessage message={error} />;
+  if (!task) return <RenderMessage message="Task not found" />;
 
-  if (loading) {
-    return (
-      <div>
-        <p>Loading...</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <p>{error}</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    );
-  }
-
-  if (!task) {
-    return (
-      <div>
-        <p>Task not found</p>
-        <Link to="/">← Back to Home</Link>
-      </div>
-    );
-  }
   return (
     <div>
       {task && (
@@ -75,10 +46,9 @@ const TaskDetail = () => {
           <p>
             Status: {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
           </p>
-
-          <Link to="/">back to home page</Link>
         </>
       )}
+      <Link to="/">back to home page</Link>
     </div>
   );
 };

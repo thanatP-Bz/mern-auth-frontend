@@ -5,6 +5,7 @@ interface TaskCardProps {
   tasks: Task[];
 }
 const TaskCard = ({ tasks }: TaskCardProps) => {
+  console.log("TaskCard tasks:", tasks);
   return (
     <div>
       <h2>Your Tasks</h2>

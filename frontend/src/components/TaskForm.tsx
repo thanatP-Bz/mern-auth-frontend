@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createTask } from "../api/taskApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useTaskContext } from "../hooks/useTaskContext";
-import type { Task } from "../reducer/taskReducer";
 
 const TaskForm = () => {
   const [title, setTitle] = useState("");
@@ -18,17 +17,11 @@ const TaskForm = () => {
     if (!user) return;
 
     try {
-      const taskFromApi = await createTask(user.token, {
+      const task = await createTask(user.token, {
         title,
         description,
         isCompleted,
       });
-      const task: Task = {
-        id: taskFromApi._id,
-        title: taskFromApi.title,
-        description: taskFromApi.description,
-        isCompleted: taskFromApi.isCompleted,
-      };
 
       dispatch({ type: "ADD_TASK", payload: task });
       setTitle("");

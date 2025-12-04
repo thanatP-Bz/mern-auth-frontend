@@ -20,7 +20,7 @@ export type TaskAction =
 export const taskReducer = (state: TaskState, action: TaskAction) => {
   switch (action.type) {
     case "ADD_TASK":
-      return { ...state, tasks: [action.payload, ...(state.tasks || [])] };
+      return { ...state, tasks: [...(state.tasks || []), action.payload] };
 
     case "SET_TASKS":
       return { ...state, tasks: action.payload };
