@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router";
 import { useAuthContext } from "../hooks/useAuthContext";
 import type { Task } from "../reducer/taskReducer";
 import { fetchCurrentTask } from "../api/taskApi";
+import { updateTask } from "../api/taskApi";
 import RenderMessage from "./RenderMessage";
 
 const TaskDetail = () => {
@@ -32,6 +33,23 @@ const TaskDetail = () => {
     loadTask();
   }, [id, user]);
 
+  const handleUpdate = async () => {
+    if (!user || !id) return;
+
+    try {
+      if (!task) return null;
+      const editTask = await updateTask(id, user.token, {
+        title: task.title,
+        description: task.description,
+        isCompleted: task.isCompleted,
+      });
+
+      setTask(editTask);
+    } catch {
+      setError("Failed to update task");
+    }
+  };
+
   if (!user) return <RenderMessage message="Please login to view the task" />;
   if (loading) return <RenderMessage message="Loading..." />;
   if (error) return <RenderMessage message={error} />;
@@ -39,6 +57,11 @@ const TaskDetail = () => {
 
   return (
     <div>
+      <button type="submit" onSubmit={handleUpdate}>
+        edit
+      </button>
+      <button type="button">delete</button>
+
       {task && (
         <>
           <h2>{task.title}</h2>
