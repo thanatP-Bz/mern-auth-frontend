@@ -13,6 +13,11 @@ const TaskDetail = () => {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     if (!user || !id) return;
@@ -20,58 +25,87 @@ const TaskDetail = () => {
     const loadTask = async () => {
       try {
         setLoading(true);
-        setError(null);
 
         const data = await fetchCurrentTask(id, user.token);
         setTask(data);
+
+        // ✅ populate edit form
+        setTitle(data.title);
+        setDescription(data.description);
+        setIsCompleted(data.isCompleted);
       } catch {
         setError("Failed to load task");
       } finally {
         setLoading(false);
       }
     };
+
     loadTask();
   }, [id, user]);
 
   const handleUpdate = async () => {
-    if (!user || !id) return;
+    if (!user || !id || !task) return;
 
     try {
-      if (!task) return null;
-      const editTask = await updateTask(id, user.token, {
-        title: task.title,
-        description: task.description,
-        isCompleted: task.isCompleted,
+      const updated = await updateTask(id, user.token, {
+        title,
+        description,
+        isCompleted,
       });
 
-      setTask(editTask);
+      setTask(updated);
+      setIsEdit(false);
     } catch {
       setError("Failed to update task");
     }
   };
 
-  if (!user) return <RenderMessage message="Please login to view the task" />;
+  if (!user) return <RenderMessage message="Please login" />;
   if (loading) return <RenderMessage message="Loading..." />;
   if (error) return <RenderMessage message={error} />;
   if (!task) return <RenderMessage message="Task not found" />;
 
   return (
     <div>
-      <button type="submit" onSubmit={handleUpdate}>
-        edit
-      </button>
-      <button type="button">delete</button>
-
-      {task && (
+      {!isEdit ? (
         <>
           <h2>{task.title}</h2>
           <p>{task.description}</p>
           <p>
             Status: {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
           </p>
+
+          <button onClick={() => setIsEdit(true)}>Edit</button>
+        </>
+      ) : (
+        <>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="title"
+          />
+
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="descriptiom"
+          />
+
+          <label>
+            <input
+              type="checkbox"
+              checked={isCompleted}
+              onChange={(e) => setIsCompleted(e.target.checked)}
+            />
+            Completed
+          </label>
+
+          <button onClick={handleUpdate}>Save</button>
+          <button onClick={() => setIsEdit(false)}>Cancel</button>
         </>
       )}
-      <Link to="/">back to home page</Link>
+
+      <Link to="/">Back to home</Link>
     </div>
   );
 };
