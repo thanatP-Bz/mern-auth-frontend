@@ -1,18 +1,9 @@
-import { useState, useEffect } from "react";
-import { useAuthContext } from "../hooks/useAuthContext";
-import { useTaskContext } from "../hooks/useTaskContext";
+import { useState } from "react";
 
 const UpdateTaskForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
-
-  const { user } = useAuthContext();
-  const { dispatch } = useTaskContext();
-
-  useEffect(() => {
-    if (!user) return;
-  }, []);
 
   return (
     <div>

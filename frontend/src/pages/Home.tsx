@@ -17,7 +17,7 @@ const Home = () => {
 
         dispatch({ type: "SET_TASKS", payload: task });
       } catch (error) {
-        console.log("Failed to fetch tasks", error);
+        console.log("Failed to get tasks", error);
       }
     };
     getTasks();

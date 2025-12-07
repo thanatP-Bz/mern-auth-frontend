@@ -47,3 +47,9 @@ export const updateTask = async (
 
   return TaskMapper(res.data);
 };
+
+export const deleteTask = async (id: string, token: string) => {
+  await axios.delete(`http://localhost:4004/api/task/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};

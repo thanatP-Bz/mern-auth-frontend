@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import type { Task } from "../reducer/taskReducer";
-import { fetchCurrentTask } from "../api/taskApi";
-import { updateTask } from "../api/taskApi";
+import { fetchCurrentTask, updateTask, deleteTask } from "../api/taskApi";
 import RenderMessage from "./RenderMessage";
+import { useTaskContext } from "../hooks/useTaskContext";
 
 const TaskDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuthContext();
+  const { dispatch } = useTaskContext();
+  const navigate = useNavigate();
 
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,6 +45,12 @@ const TaskDetail = () => {
     loadTask();
   }, [id, user]);
 
+  useEffect(() => {
+    if (!loading && task === null) {
+      navigate("/", { replace: true });
+    }
+  }, [task, loading, navigate]);
+
   const handleUpdate = async () => {
     if (!user || !id || !task) return;
 
@@ -57,6 +65,21 @@ const TaskDetail = () => {
       setIsEdit(false);
     } catch {
       setError("Failed to update task");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!user || !id) return;
+
+    try {
+      await deleteTask(id, user.token);
+
+      setTask(null);
+      dispatch({ type: "REMOVE_TASK", payload: id });
+      console.log(task);
+      navigate("/", { replace: true });
+    } catch {
+      setError("Failed to delete task");
     }
   };
 
@@ -75,7 +98,12 @@ const TaskDetail = () => {
             Status: {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
           </p>
 
-          <button onClick={() => setIsEdit(true)}>Edit</button>
+          <button type="button" onClick={() => setIsEdit(true)}>
+            Edit
+          </button>
+          <button type="button" onClick={handleDelete}>
+            delete
+          </button>
         </>
       ) : (
         <>
