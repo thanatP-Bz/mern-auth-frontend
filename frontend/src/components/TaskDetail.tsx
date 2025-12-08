@@ -71,10 +71,12 @@ const TaskDetail = () => {
   const handleDelete = async () => {
     if (!user || !id) return;
 
+    const comfirm = window.confirm("Delete this task?");
+    if (!comfirm) return;
+
     try {
       await deleteTask(id, user.token);
 
-      setTask(null);
       dispatch({ type: "REMOVE_TASK", payload: id });
       console.log(task);
       navigate("/", { replace: true });
@@ -82,6 +84,8 @@ const TaskDetail = () => {
       setError("Failed to delete task");
     }
   };
+
+  console.log(id);
 
   if (!user) return <RenderMessage message="Please login" />;
   if (loading) return <RenderMessage message="Loading..." />;
