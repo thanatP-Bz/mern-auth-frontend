@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { loginUser } from "../api/loginApi";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const Login = () => {
   const { dispatch } = useAuthContext();
@@ -18,6 +20,16 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!form.email || !form.password) {
+      toast("Please enter Email and Password", {
+        style: {
+          background: "#0ea5e9", // sky-500
+          color: "white",
+          border: "1px solid #0ea5e9",
+        },
+      });
+    }
+
     try {
       const user = await loginUser(form.email, form.password);
       dispatch({ type: "LOGIN", payload: user });
@@ -25,6 +37,13 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.log(error);
+      toast("Incorrect Password", {
+        style: {
+          background: "#0ea5e9", // sky-500
+          color: "white",
+          border: "1px solid #0ea5e9",
+        },
+      });
     }
 
     setForm({ email: "", password: "" });
@@ -40,7 +59,6 @@ const Login = () => {
         value={form.email}
         placeholder="email"
         onChange={handleChange}
-        required
       />
 
       <input
@@ -49,10 +67,14 @@ const Login = () => {
         value={form.password}
         placeholder="password"
         onChange={handleChange}
-        required
       />
 
-      <button type="submit">Log In</button>
+      <Button
+        type="submit"
+        className="text-white bg-emerald-600 box-border border border-transparent hover:bg-warning-strong focus:ring-4 focus:ring-warning-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none cursor-pointer"
+      >
+        Log In
+      </Button>
     </form>
   );
 };

@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import TaskDetail from "./components/TaskDetail";
+import { Toaster } from "@/components/ui/sonner";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -11,7 +12,12 @@ const router = createBrowserRouter([
   { path: "task/:id", element: <TaskDetail /> },
 ]);
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Toaster position="bottom-right" />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

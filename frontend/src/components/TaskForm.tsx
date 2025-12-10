@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createTask } from "../api/taskApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useTaskContext } from "../hooks/useTaskContext";
-
+import { Button } from "./ui/button";
 const TaskForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -56,7 +56,7 @@ const TaskForm = () => {
         Completed
       </label>
 
-      <button type="submit">add task</button>
+      <Button type="submit">add task</Button>
     </form>
   );
 };
