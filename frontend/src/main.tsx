@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import App from "./App.tsx";
+import "./index.css";
 import ReactDOM from "react-dom/client";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
 import { TaskContextProvider } from "./context/TaskContext.tsx";
