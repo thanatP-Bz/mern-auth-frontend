@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { loginUser } from "../api/loginApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { BadgeCheck, BadgeAlert } from "lucide-react";
 
 const Login = () => {
   const { dispatch } = useAuthContext();
@@ -20,28 +22,30 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.email || !form.password) {
-      toast("Please enter Email and Password", {
-        style: {
-          background: "#0ea5e9", // sky-500
-          color: "white",
-          border: "1px solid #0ea5e9",
-        },
-      });
-    }
-
     try {
       const user = await loginUser(form.email, form.password);
       dispatch({ type: "LOGIN", payload: user });
 
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-      toast("Incorrect Password", {
+      localStorage.setItem("user", JSON.stringify(user));
+
+      toast("Login Successfully!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green" />,
         style: {
-          background: "#0ea5e9", // sky-500
-          color: "white",
-          border: "1px solid #0ea5e9",
+          background: "white",
+          color: "green",
+          border: "green 1px solid",
+        },
+      });
+
+      navigate("/");
+    } catch (error: any) {
+      console.log(error);
+      toast(error.response?.data?.message || "somthing went wrong", {
+        icon: <BadgeAlert className="w-5 h-5 text-red" />,
+        style: {
+          background: "white",
+          color: "red",
+          border: "red 1px solid",
         },
       });
     }
@@ -51,8 +55,6 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-
       <input
         type="email"
         name="email"
