@@ -5,12 +5,20 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import TaskDetail from "./components/TaskDetail";
 import { Toaster } from "@/components/ui/sonner";
+import ProtectedRoute from "./components/PotectedRoute";
 
 const router = createBrowserRouter([
   { path: "/auth", element: <Auth /> },
   { path: "register", element: <Register /> },
   { path: "login", element: <Login /> },
-  { path: "/", element: <Home /> },
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
+  },
   { path: "task/:id", element: <TaskDetail /> },
 ]);
 function App() {
