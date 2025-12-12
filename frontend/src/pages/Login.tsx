@@ -5,6 +5,9 @@ import { loginUser } from "../api/loginApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Lock, Mail } from "lucide-react";
 import { BadgeCheck, BadgeAlert } from "lucide-react";
 
 const Login = () => {
@@ -54,30 +57,45 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        name="email"
-        value={form.email}
-        placeholder="email"
-        onChange={handleChange}
-      />
+    <div className="w-full max-w-sm mx-auto p-8 bg-card rounded-2xl shadow-md">
+      <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
-      <input
-        type="password"
-        name="password"
-        value={form.password}
-        placeholder="password"
-        onChange={handleChange}
-      />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <Label>Email</Label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+            <Input
+              className="pl-10  border-none"
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
 
-      <Button
-        type="submit"
-        className="text-white bg-emerald-600 box-border border border-transparent hover:bg-warning-strong focus:ring-4 focus:ring-warning-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none cursor-pointer"
-      >
-        Log In
-      </Button>
-    </form>
+        <div className="space-y-2">
+          <Label>Password</Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+            <Input
+              className="pl-10  border-none"
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <Button type="submit" className="mt-5 w-full cursor-pointer">
+          Log In
+        </Button>
+      </form>
+    </div>
   );
 };
 
