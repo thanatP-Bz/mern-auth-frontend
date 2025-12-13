@@ -14,7 +14,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="border-b">
+    <header className="shadow-xl">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <Link to="/" className="text-lg font-semibold tracking-tight">
           TaskApp

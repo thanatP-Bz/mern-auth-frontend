@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import { fetchTasks } from "../api/taskApi";
 import { useTaskContext } from "../hooks/useTaskContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import TaskForm from "../components/TaskForm";
-import TaskCard from "../components/TaskCard";
 import Navbar from "../components/Navbar";
+import Task from "./Task";
 
 const Home = () => {
-  const { tasks, dispatch } = useTaskContext();
+  const { dispatch } = useTaskContext();
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -27,9 +26,7 @@ const Home = () => {
   return (
     <div>
       <Navbar />
-      <TaskCard tasks={tasks} />
-
-      <TaskForm />
+      <Task />
     </div>
   );
 };

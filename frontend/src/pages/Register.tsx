@@ -31,7 +31,7 @@ const Register = () => {
 
       localStorage.setItem("user", JSON.stringify(user));
 
-      toast("Login Successfully!", {
+      toast("Register Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green" />,
         style: {
           background: "white",
