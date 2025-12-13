@@ -47,7 +47,9 @@ const TaskForm = () => {
       <CardContent>
         <form onSubmit={submitHandle} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title" className="block mb-2">
+              Title:
+            </Label>
             <Input
               id="title"
               value={title}
@@ -58,7 +60,9 @@ const TaskForm = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description" className="block mb-2">
+              Description:
+            </Label>
             <Textarea
               id="description"
               value={description}
@@ -77,7 +81,7 @@ const TaskForm = () => {
             <Label htmlFor="completed">Completed</Label>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full cursor-pointer">
             Add Task
           </Button>
         </form>

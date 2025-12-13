@@ -29,9 +29,7 @@ const TaskCard = ({ tasks }: TaskCardProps) => {
                 </Link>
               </CardTitle>
 
-              <Badge variant={task.isCompleted ? "default" : "secondary"}>
-                {task.isCompleted ? "Completed" : "Pending"}
-              </Badge>
+              <Badge>{task.isCompleted ? "Completed" : "Pending"}</Badge>
             </CardHeader>
 
             {task.description && (
