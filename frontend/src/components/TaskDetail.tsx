@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import type { Task } from "../reducer/taskReducer";
-import { fetchCurrentTask, updateTask, deleteTask } from "../api/taskApi";
+import { fetchCurrentTask, updateTask } from "../api/taskApi";
 import RenderMessage from "./RenderMessage";
-import { useTaskContext } from "../hooks/useTaskContext";
 
 import {
   Card,
@@ -21,7 +20,6 @@ import { Label } from "@/components/ui/label";
 const TaskDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuthContext();
-  const { dispatch } = useTaskContext();
   const navigate = useNavigate();
 
   const [task, setTask] = useState<Task | null>(null);
@@ -78,21 +76,6 @@ const TaskDetail = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!user || !id) return;
-
-    const comfirm = window.confirm("Delete this task?");
-    if (!comfirm) return;
-
-    try {
-      await deleteTask(id, user.token);
-      dispatch({ type: "REMOVE_TASK", payload: id });
-      navigate("/", { replace: true });
-    } catch {
-      setError("Failed to delete task");
-    }
-  };
-
   if (!user) return <RenderMessage message="Please login" />;
   if (loading) return <RenderMessage message="Loading..." />;
   if (error) return <RenderMessage message={error} />;
@@ -119,9 +102,6 @@ const TaskDetail = () => {
             <p className="text-gray-700">{task.description}</p>
             <div className="flex gap-2">
               <Button onClick={() => setIsEdit(true)}>Edit</Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete
-              </Button>
             </div>
           </>
         ) : (
