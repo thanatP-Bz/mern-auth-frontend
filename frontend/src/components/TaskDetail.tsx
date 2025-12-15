@@ -6,6 +6,18 @@ import { fetchCurrentTask, updateTask, deleteTask } from "../api/taskApi";
 import RenderMessage from "./RenderMessage";
 import { useTaskContext } from "../hooks/useTaskContext";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+
 const TaskDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuthContext();
@@ -27,11 +39,9 @@ const TaskDetail = () => {
     const loadTask = async () => {
       try {
         setLoading(true);
-
         const data = await fetchCurrentTask(id, user.token);
         setTask(data);
 
-        // ✅ populate edit form
         setTitle(data.title);
         setDescription(data.description);
         setIsCompleted(data.isCompleted);
@@ -76,16 +86,12 @@ const TaskDetail = () => {
 
     try {
       await deleteTask(id, user.token);
-
       dispatch({ type: "REMOVE_TASK", payload: id });
-      console.log(task);
       navigate("/", { replace: true });
     } catch {
       setError("Failed to delete task");
     }
   };
-
-  console.log(id);
 
   if (!user) return <RenderMessage message="Please login" />;
   if (loading) return <RenderMessage message="Loading..." />;
@@ -93,52 +99,77 @@ const TaskDetail = () => {
   if (!task) return <RenderMessage message="Task not found" />;
 
   return (
-    <div>
-      {!isEdit ? (
-        <>
-          <h2>{task.title}</h2>
-          <p>{task.description}</p>
-          <p>
-            Status: {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
-          </p>
+    <Card className="max-w-md mx-auto mt-10">
+      <CardHeader>
+        <CardTitle>{!isEdit ? task.title : "Edit Task"}</CardTitle>
+        {!isEdit && (
+          <CardDescription>
+            Status:{" "}
+            <span
+              className={task.isCompleted ? "text-green-600" : "text-red-600"}
+            >
+              {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
+            </span>
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!isEdit ? (
+          <>
+            <p className="text-gray-700">{task.description}</p>
+            <div className="flex gap-2">
+              <Button onClick={() => setIsEdit(true)}>Edit</Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Title"
+              />
+            </div>
 
-          <button type="button" onClick={() => setIsEdit(true)}>
-            Edit
-          </button>
-          <button type="button" onClick={handleDelete}>
-            delete
-          </button>
-        </>
-      ) : (
-        <>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="title"
-          />
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description"
+                className="resize-none"
+              />
+            </div>
 
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="descriptiom"
-          />
+            <div className="flex items-center space-x-2">
+              <Input
+                id="completed"
+                type="checkbox"
+                checked={isCompleted}
+                onChange={(e) => setIsCompleted(e.target.checked)}
+              />
+              <Label htmlFor="completed">Completed</Label>
+            </div>
 
-          <label>
-            <input
-              type="checkbox"
-              checked={isCompleted}
-              onChange={(e) => setIsCompleted(e.target.checked)}
-            />
-            Completed
-          </label>
-
-          <button onClick={handleUpdate}>Save</button>
-          <button onClick={() => setIsEdit(false)}>Cancel</button>
-        </>
-      )}
-
-      <Link to="/">Back to home</Link>
-    </div>
+            <div className="flex gap-2">
+              <Button onClick={handleUpdate}>Save</Button>
+              <Button variant="outline" onClick={() => setIsEdit(false)}>
+                Cancel
+              </Button>
+            </div>
+          </>
+        )}
+        <Link to="/" className="text-blue-600 hover:underline mt-4 block">
+          ← Back to home
+        </Link>
+      </CardContent>
+    </Card>
   );
 };
 
