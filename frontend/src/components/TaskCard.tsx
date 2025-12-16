@@ -9,6 +9,7 @@ import RenderMessage from "./RenderMessage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
+import { Check, Clock } from "lucide-react";
 
 interface TaskCardProps {
   tasks: Task[];
@@ -54,28 +55,42 @@ const TaskCard = ({ tasks }: TaskCardProps) => {
             className="hover:shadow-md transition-shadow border-none"
           >
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-base">
-                <Link to={`/task/${task.id}`} className="hover:underline">
-                  {task.title}
-                </Link>
-              </CardTitle>
+              <CardTitle className="text-base">title: {task.title}</CardTitle>
 
-              <Badge>{task.isCompleted ? "Completed" : "Pending"}</Badge>
+              <Badge className="flex items-center gap-1">
+                {task.isCompleted ? (
+                  <>
+                    <Check className="w-4 h-4 text-green-600" />
+                    Completed
+                  </>
+                ) : (
+                  <>
+                    <Clock className="w-4 h-4 text-gray-400" />
+                    Pending
+                  </>
+                )}
+              </Badge>
             </CardHeader>
 
             {task.description && (
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  {task.description}
+                  description: {task.description}
                 </p>
               </CardContent>
             )}
-            <Button
-              onClick={() => deleteHadle(task.id)}
-              className="m-2 cursor-pointer"
-            >
-              delete
-            </Button>
+
+            <div className="m-4 space-x-4">
+              <Button className="cursor-pointer">
+                <Link to={`/task/${task.id}`}>details</Link>
+              </Button>
+              <Button
+                onClick={() => deleteHadle(task.id)}
+                className=" cursor-pointer"
+              >
+                delete
+              </Button>
+            </div>
           </Card>
         ))}
       </div>

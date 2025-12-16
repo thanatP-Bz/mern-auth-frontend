@@ -5,17 +5,13 @@ import type { Task } from "../reducer/taskReducer";
 import { fetchCurrentTask, updateTask } from "../api/taskApi";
 import RenderMessage from "./RenderMessage";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { AlertCircle, BadgeCheck, CheckCircle, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const TaskDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -71,8 +67,23 @@ const TaskDetail = () => {
 
       setTask(updated);
       setIsEdit(false);
+      toast("Edit Task Completed!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green" />,
+        style: {
+          background: "white",
+          color: "green",
+          border: "green 1px solid",
+        },
+      });
     } catch {
-      setError("Failed to update task");
+      toast("Failed To Edit Task", {
+        icon: <AlertCircle className="w-5 h-5 text-green" />,
+        style: {
+          background: "white",
+          color: "green",
+          border: "green 1px solid",
+        },
+      });
     }
   };
 
@@ -82,20 +93,29 @@ const TaskDetail = () => {
   if (!task) return <RenderMessage message="Task not found" />;
 
   return (
-    <Card className="max-w-md mx-auto mt-10">
-      <CardHeader>
-        <CardTitle>{!isEdit ? task.title : "Edit Task"}</CardTitle>
+    <Card className="max-w-lg mx-auto mt-10">
+      <CardHeader className="flex flex-row items-start justify-between">
+        <div>
+          <CardTitle>{!isEdit ? task.title : "Edit Task"}</CardTitle>
+        </div>
+
         {!isEdit && (
-          <CardDescription>
-            Status:{" "}
-            <span
-              className={task.isCompleted ? "text-green-600" : "text-red-600"}
-            >
-              {task.isCompleted ? "Completed ✅" : "Not completed ❌"}
-            </span>
-          </CardDescription>
+          <div className="flex items-center gap-1 text-sm">
+            {task.isCompleted ? (
+              <>
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                <span>Completed</span>
+              </>
+            ) : (
+              <>
+                <XCircle className="w-4 h-4 text-red-500" />
+                <span>Pending</span>
+              </>
+            )}
+          </div>
         )}
       </CardHeader>
+
       <CardContent className="space-y-4">
         {!isEdit ? (
           <>
@@ -138,8 +158,14 @@ const TaskDetail = () => {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={handleUpdate}>Save</Button>
-              <Button variant="outline" onClick={() => setIsEdit(false)}>
+              <Button className="cursor-pointer" onClick={handleUpdate}>
+                Save
+              </Button>
+              <Button
+                className="cursor-pointer"
+                variant="outline"
+                onClick={() => setIsEdit(false)}
+              >
                 Cancel
               </Button>
             </div>

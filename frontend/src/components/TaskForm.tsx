@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { BadgeAlert, BadgeCheck } from "lucide-react";
 
 const TaskForm = () => {
   const [title, setTitle] = useState("");
@@ -29,12 +31,29 @@ const TaskForm = () => {
         isCompleted,
       });
 
+      toast("Task Created!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green" />,
+        style: {
+          background: "white",
+          color: "green",
+          border: "green 1px solid",
+        },
+      });
+
       dispatch({ type: "ADD_TASK", payload: task });
       setTitle("");
       setDescription("");
       setIsCompleted(false);
-    } catch (error) {
-      console.log(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast(error.response?.data?.message || "somthing went wrong", {
+        icon: <BadgeAlert className="w-5 h-5 text-red" />,
+        style: {
+          background: "white",
+          color: "red",
+          border: "red 1px solid",
+        },
+      });
     }
   };
 
