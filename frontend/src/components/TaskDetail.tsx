@@ -121,7 +121,12 @@ const TaskDetail = () => {
           <>
             <p className="text-gray-700">{task.description}</p>
             <div className="flex gap-2">
-              <Button onClick={() => setIsEdit(true)}>Edit</Button>
+              <Button
+                className="cursor-pointer"
+                onClick={() => setIsEdit(true)}
+              >
+                Edit
+              </Button>
             </div>
           </>
         ) : (

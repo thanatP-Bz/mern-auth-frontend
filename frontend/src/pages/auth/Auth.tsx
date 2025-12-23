@@ -1,6 +1,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Login from "./Login";
 import Register from "./Register";
+import { Link } from "react-router-dom";
 
 const Auth = () => {
   return (
@@ -24,6 +25,12 @@ const Auth = () => {
             <Register />
           </TabsContent>
         </Tabs>
+        <div className="flex items-center justify-center p-4">
+          <h4>forget your password?</h4>{" "}
+          <Link to="/forget-password" className="ml-2 text-blue-500 underline">
+            click here
+          </Link>
+        </div>
       </div>
     </div>
   );
