@@ -6,6 +6,9 @@ import { useParams } from "react-router-dom";
 const ResetPassword = () => {
   const { token } = useParams<{ token: string }>();
 
+  console.log("Token from useParams:", token);
+  console.log("Token type:", typeof token);
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -44,7 +47,18 @@ const ResetPassword = () => {
       setIsSuccess(true);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setError("Failed to reset password. Please try again.");
+      console.error("Full error:", error);
+      console.error("Error response:", error.response);
+      console.error("Error status:", error.response?.status);
+      console.error("Error data:", error.response?.data);
+      console.error("Error message:", error.response?.data?.message);
+
+      // Set the error message
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Failed to reset password. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

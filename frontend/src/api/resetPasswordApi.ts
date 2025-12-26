@@ -1,16 +1,15 @@
 import axios from "axios";
-import type { ResetPasswordResponse } from "@/types/resetPasswordPayload";
 
-export const resetPassword = async (
-  token: string,
-  newPassword: string
-): Promise<ResetPasswordResponse> => {
-  const res = await axios.post<ResetPasswordResponse>(
-    "http://localhost:4004/api/auth/reset-password",
-    {
-      token,
-      password: newPassword,
-    }
+export const resetPassword = async (token: string, newPassword: string) => {
+  console.log("=== FRONTEND API CALL ===");
+  console.log("Token being sent:", token);
+  console.log("Token length:", token.length);
+  console.log("Password:", newPassword ? "***exists***" : "missing");
+  const res = await axios.post(
+    `http://localhost:4004/api/auth/reset-password/${token}`,
+    { password: newPassword } // Make sure it's "password", not "newPassword"
   );
+
+  console.log("API Response:", res.data);
   return res.data;
 };

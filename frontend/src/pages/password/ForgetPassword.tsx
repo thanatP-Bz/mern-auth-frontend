@@ -48,7 +48,6 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      await forgetPassword(email);
       const response = await forgetPassword(email);
       console.log("Response:", response);
 
