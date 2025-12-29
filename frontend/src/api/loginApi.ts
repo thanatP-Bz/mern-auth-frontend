@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 import type { AuthUser } from "../types/authUser";
 
 export const loginUser = async (
@@ -14,4 +15,9 @@ export const loginUser = async (
   );
 
   return res.data;
+};
+
+export const logout = async () => {
+  const response = await axiosInstance.post(`/auth/logout`);
+  return response.data;
 };

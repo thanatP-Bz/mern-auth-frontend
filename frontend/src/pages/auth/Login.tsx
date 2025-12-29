@@ -26,10 +26,15 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const user = await loginUser(form.email, form.password);
-      dispatch({ type: "LOGIN", payload: user });
-
-      localStorage.setItem("user", JSON.stringify(user));
+      const data = await loginUser(form.email, form.password);
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          user: data.user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken || "",
+        },
+      });
 
       toast("Login Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green" />,

@@ -2,7 +2,6 @@
 import {
   createContext,
   useReducer,
-  useEffect,
   type ReactNode,
   type Dispatch,
 } from "react";
@@ -18,14 +17,17 @@ interface AuthContextType extends AuthState {
 
 const initialState: AuthState = {
   user: null,
+  accessToken: null,
 };
 
 const init = (initialState: AuthState) => {
   const storedUser = localStorage.getItem("user");
+  const storedToken = localStorage.getItem("accessToken");
 
   return {
     ...initialState,
     user: storedUser ? JSON.parse(storedUser) : null,
+    access: storedToken,
   };
 };
 
@@ -39,10 +41,6 @@ interface AuthContextProviderProps {
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [state, dispatch] = useReducer(authReducer, initialState, init);
-
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(state.user));
-  }, [state.user]);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>

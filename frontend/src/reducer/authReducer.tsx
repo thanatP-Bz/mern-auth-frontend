@@ -1,26 +1,53 @@
 export interface User {
-  id: string;
+  _id: string;
   email: string;
   token: string;
 }
 
 export interface AuthState {
   user: User | null;
+  accessToken: string | null;
 }
 
 export type AuthAction =
-  | { type: "REGISTER"; payload: User }
-  | { type: "LOGIN"; payload: User }
+  | {
+      type: "REGISTER";
+      payload: { user: User; accessToken: string; refreshToken: string };
+    }
+  | {
+      type: "LOGIN";
+      payload: { user: User; accessToken: string; refreshToken: string };
+    }
   | { type: "LOGOUT" };
 
 export const authReducer = (state: AuthState, action: AuthAction) => {
   switch (action.type) {
     case "REGISTER":
-      return { user: action.payload };
+      localStorage.setItem("accessToken", action.payload.accessToken);
+      if (action.payload.refreshToken) {
+        localStorage.setItem("refreshToken", action.payload.refreshToken);
+      }
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+
+      return {
+        user: action.payload.user,
+        accessToken: action.payload.accessToken,
+      };
     case "LOGIN":
-      return { user: action.payload };
+      //store both token in localstorage
+      localStorage.setItem("accessToken", action.payload.accessToken);
+      localStorage.setItem("refreshToken", action.payload.refreshToken);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      return {
+        user: action.payload.user,
+        accessToken: action.payload.accessToken,
+      };
     case "LOGOUT":
-      return { user: null };
+      //clear everything
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      return { user: null, accessToken: null };
     default:
       return state;
   }

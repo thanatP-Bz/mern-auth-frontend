@@ -1,12 +1,12 @@
-import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 import type { Task } from "../reducer/taskReducer";
 import { TaskMapper } from "../types/taskMapper";
 
-export const fetchTasks = async (token: string): Promise<Task[]> => {
-  const res = await axios.get("http://localhost:4004/api/task/", {
-    headers: {
+export const fetchTasks = async (/* token: string */): Promise<Task[]> => {
+  const res = await axiosInstance.get("/task/", {
+    /*   headers: {
       Authorization: `Bearer ${token}`,
-    },
+    }, */
   });
 
   return res.data.map(TaskMapper);
@@ -16,7 +16,7 @@ export const createTask = async (
   token: string,
   data: { title: string; description: string; isCompleted: boolean }
 ): Promise<Task> => {
-  const res = await axios.post("http://localhost:4004/api/task/", data, {
+  const res = await axiosInstance.post("/task/", data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -29,7 +29,7 @@ export const fetchCurrentTask = async (
   id: string,
   token: string
 ): Promise<Task> => {
-  const res = await axios.get(`http://localhost:4004/api/task/${id}`, {
+  const res = await axiosInstance.get(`/task/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -41,7 +41,7 @@ export const updateTask = async (
   token: string,
   data: { title: string; description: string; isCompleted: boolean }
 ): Promise<Task> => {
-  const res = await axios.patch(`http://localhost:4004/api/task/${id}`, data, {
+  const res = await axiosInstance.patch(`/task/${id}`, data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -49,7 +49,7 @@ export const updateTask = async (
 };
 
 export const deleteTask = async (id: string, token: string) => {
-  await axios.delete(`http://localhost:4004/api/task/${id}`, {
+  await axiosInstance.delete(`/task/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };

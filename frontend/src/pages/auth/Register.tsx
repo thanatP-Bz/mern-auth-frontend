@@ -26,10 +26,15 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const user = await registerUser(form.name, form.email, form.password);
-      dispatch({ type: "REGISTER", payload: user });
-
-      localStorage.setItem("user", JSON.stringify(user));
+      const data = await registerUser(form.name, form.email, form.password);
+      dispatch({
+        type: "REGISTER",
+        payload: {
+          user: data.user,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken || "",
+        },
+      });
 
       toast("Register Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green" />,

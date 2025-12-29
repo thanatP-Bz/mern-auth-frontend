@@ -13,7 +13,8 @@ const Home = () => {
     const getTasks = async () => {
       if (!user) return;
       try {
-        const task = await fetchTasks(user.token);
+        const task = await fetchTasks();
+        console.log("accessToken:", localStorage.getItem("accessToken"));
 
         dispatch({ type: "SET_TASKS", payload: task });
       } catch (error) {
