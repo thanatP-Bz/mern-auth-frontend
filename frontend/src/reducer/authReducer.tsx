@@ -7,6 +7,7 @@ export interface User {
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
 }
 
 export type AuthAction =
@@ -32,6 +33,7 @@ export const authReducer = (state: AuthState, action: AuthAction) => {
       return {
         user: action.payload.user,
         accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
       };
     case "LOGIN":
       //store both token in localstorage
@@ -41,13 +43,14 @@ export const authReducer = (state: AuthState, action: AuthAction) => {
       return {
         user: action.payload.user,
         accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken,
       };
     case "LOGOUT":
       //clear everything
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
-      return { user: null, accessToken: null };
+      return { user: null, accessToken: null, refreshToken: null };
     default:
       return state;
   }

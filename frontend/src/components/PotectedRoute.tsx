@@ -8,7 +8,6 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user } = useAuthContext();
-
   if (!user) {
     return <Navigate to="/auth" replace />;
   }

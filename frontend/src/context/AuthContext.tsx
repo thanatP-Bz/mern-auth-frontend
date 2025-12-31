@@ -16,8 +16,9 @@ interface AuthContextType extends AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
-  accessToken: null,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  accessToken: localStorage.getItem("accessToken"),
+  refreshToken: localStorage.getItem("refreshToken"),
 };
 
 const init = (initialState: AuthState) => {

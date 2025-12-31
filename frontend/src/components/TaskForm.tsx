@@ -25,7 +25,7 @@ const TaskForm = () => {
     if (!user) return;
 
     try {
-      const task = await createTask(user.token, {
+      const task = await createTask({
         title,
         description,
         isCompleted,

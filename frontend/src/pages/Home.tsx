@@ -14,7 +14,6 @@ const Home = () => {
       if (!user) return;
       try {
         const task = await fetchTasks();
-        console.log("accessToken:", localStorage.getItem("accessToken"));
 
         dispatch({ type: "SET_TASKS", payload: task });
       } catch (error) {

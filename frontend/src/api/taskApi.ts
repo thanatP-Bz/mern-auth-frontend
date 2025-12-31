@@ -12,16 +12,12 @@ export const fetchTasks = async (/* token: string */): Promise<Task[]> => {
   return res.data.map(TaskMapper);
 };
 
-export const createTask = async (
-  token: string,
-  data: { title: string; description: string; isCompleted: boolean }
-): Promise<Task> => {
-  const res = await axiosInstance.post("/task/", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+export const createTask = async (data: {
+  title: string;
+  description: string;
+  isCompleted: boolean;
+}): Promise<Task> => {
+  const res = await axiosInstance.post("/task/", data);
   return TaskMapper(res.data);
 };
 
