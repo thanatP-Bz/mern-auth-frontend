@@ -1,26 +1,17 @@
-/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useReducer,
   type ReactNode,
   type Dispatch,
 } from "react";
-import {
-  type AuthAction,
-  type AuthState,
-  authReducer,
-} from "../reducer/authReducer";
+import { authReducer, initialState, init } from "../reducer/authReducer";
+import type { AuthState, AuthAction } from "../reducer/authReducer";
 
 interface AuthContextType extends AuthState {
   dispatch: Dispatch<AuthAction>;
 }
 
-const initialState: AuthState = {
-  user: JSON.parse(localStorage.getItem("user") || "null"),
-  accessToken: localStorage.getItem("accessToken"),
-  refreshToken: localStorage.getItem("refreshToken"),
-};
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
@@ -30,7 +21,7 @@ interface AuthContextProviderProps {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [state, dispatch] = useReducer(authReducer, initialState, init);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>

@@ -1,175 +1,142 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { forgetPassword } from "@/api/auth/forgetPasswordApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  ArrowLeft,
-  Mail,
-  CheckCircle2,
-  BadgeAlert,
-  BadgeCheck,
-} from "lucide-react";
-import { useNavigate } from "react-router";
-import { forgetPassword } from "@/api/forgetPasswordApi";
+import { Mail, BadgeCheck, BadgeAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-export default function ForgotPasswordPage() {
+const ForgetPassword = () => {
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes("@")) {
-      setError("");
-      toast("Please enter a valid email address", {
-        icon: <BadgeAlert className="w-5 h-5 text-red" />,
-        style: {
-          background: "white",
-          color: "red",
-          border: "red 1px solid",
-        },
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      const response = await forgetPassword(email);
-      console.log("Response:", response);
+      await forgetPassword(email);
 
-      toast("Reset link sent", {
-        icon: <BadgeCheck className="w-5 h-5 text-green" />,
+      toast("Reset link sent to your email!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
         style: {
           background: "white",
           color: "green",
-          border: "green 1px solid",
+          border: "1px solid green",
         },
       });
 
-      // If successful
-      setIsSubmitted(true);
-
+      setIsSuccess(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // Handle different error cases
-      if (error.response?.status === 404) {
-        setError("No account found with this email address");
-      } else if (error.response?.data?.message) {
-        setError(error.response.data.message);
-      } else {
-        setError("Failed to send reset email. Please try again.");
-      }
+      toast(error.response?.data?.message || "Something went wrong", {
+        icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
+        style: {
+          background: "white",
+          color: "red",
+          border: "1px solid red",
+        },
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleBackToLogin = () => {
-    navigate("/auth");
-  };
-
-  if (isSubmitted) {
+  // Success Screen
+  if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-6 h-6 text-green-600" />
-            </div>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription className="text-base">
-              We've sent password reset instructions to
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-center font-medium text-slate-900 mb-6">
-              {email}
-            </p>
-            <Alert>
-              <Mail className="h-4 w-4" />
-              <AlertDescription>
-                The link will expire in 15 minutes. If you don't see the email,
-                check your spam folder.
-              </AlertDescription>
-            </Alert>
-          </CardContent>
-          <CardFooter>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleBackToLogin}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Login
-            </Button>
-          </CardFooter>
-        </Card>
+      <div className="w-full max-w-sm mx-auto p-8 bg-white rounded-2xl shadow-md text-center">
+        <div className="mb-4">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+            <BadgeCheck className="w-10 h-10 text-green-600" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-semibold mb-3">Check Your Email</h2>
+        <p className="text-gray-600 mb-2">
+          We've sent a password reset link to
+        </p>
+        <p className="text-gray-800 font-medium mb-6">{email}</p>
+        <p className="text-sm text-gray-500 mb-6">
+          The link will expire in 15 minutes.
+        </p>
+
+        <div className="space-y-3">
+          <Link
+            to="/login"
+            className="block w-full py-2 text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+          >
+            <ArrowLeft className="inline w-4 h-4 mr-1" />
+            Back to Login
+          </Link>
+
+          <Link
+            to="/auth"
+            className="block text-sm text-gray-500 hover:text-gray-700"
+          >
+            Back to options
+          </Link>
+        </div>
       </div>
     );
   }
 
+  // Forgot Password Form
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">Forgot Password?</CardTitle>
-          <CardDescription>
-            Enter your email address and we'll send you a link to reset your
-            password.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+    <div className="w-full max-w-sm mx-auto p-8 bg-white rounded-2xl shadow-md">
+      <h2 className="text-2xl font-semibold text-center mb-3">
+        Forgot Password?
+      </h2>
+      <p className="text-gray-600 text-center text-sm mb-6">
+        Enter your email address and we'll send you a link to reset your
+        password.
+      </p>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <Label>Email Address</Label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
-              id="email"
+              className="pl-10 border-none"
               type="email"
-              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
+              placeholder="you@example.com"
+              required
             />
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3">
-          <Button
-            onClick={handleSubmit}
-            className="w-full cursor-pointer bg-gray-800 text-white"
-            disabled={isLoading}
-          >
-            {isLoading ? "Sending..." : "Send Reset Link"}
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full cursor-pointer"
-            onClick={handleBackToLogin}
-            disabled={isLoading}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Login
-          </Button>
-        </CardFooter>
-      </Card>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full cursor-pointer bg-gray-800 text-white hover:bg-gray-900"
+          disabled={isLoading}
+        >
+          {isLoading ? "Sending..." : "Send Reset Link"}
+        </Button>
+      </form>
+
+      {/* Navigation Links */}
+      <div className="mt-6 text-center space-y-2">
+        <Link
+          to="/auth/login"
+          className="block text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+        >
+          <ArrowLeft className="inline w-4 h-4 mr-1" />
+          Back to Login
+        </Link>
+
+        <Link
+          to="/auth"
+          className="block text-sm text-gray-500 hover:text-gray-700"
+        >
+          Back to options
+        </Link>
+      </div>
     </div>
   );
-}
+};
+
+export default ForgetPassword;

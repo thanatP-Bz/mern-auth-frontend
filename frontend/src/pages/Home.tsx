@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { fetchTasks } from "../api/taskApi";
+import { fetchTasks } from "../api/task/taskApi";
 import { useTaskContext } from "../hooks/useTaskContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import Navbar from "../components/Navbar";
@@ -11,13 +11,15 @@ const Home = () => {
 
   useEffect(() => {
     const getTasks = async () => {
-      if (!user) return;
       try {
-        const task = await fetchTasks();
-
-        dispatch({ type: "SET_TASKS", payload: task });
-      } catch (error) {
-        console.log("Failed to get tasks", error);
+        const tasks = await fetchTasks();
+        console.log("✅ Tasks fetched successfully:", tasks);
+        dispatch({ type: "SET_TASKS", payload: tasks });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.error("❌ Failed to get tasks:", error);
+        console.error("Error response:", error.response?.data);
+        console.error("Error status:", error.response?.status);
       }
     };
     getTasks();

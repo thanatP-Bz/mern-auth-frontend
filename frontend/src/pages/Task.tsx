@@ -6,14 +6,20 @@ const Task = () => {
   const { tasks } = useTaskContext();
 
   return (
-    <div className="min-h-screen item-center bg-slate-50 w-full">
-      <div className="max-w-2xl flex items-center justify-center gap-10 mx-auto p-6 space-y-8 ">
-        <div className="flex-1">
-          <TaskCard tasks={tasks} />
-        </div>
+    <div className="min-h-screen bg-slate-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 max-w-7xl mx-auto">
+          {/* Task List Section */}
+          <div className="order-2 lg:order-1">
+            <TaskCard tasks={tasks} />
+          </div>
 
-        <div className="flex-1">
-          <TaskForm />
+          {/* Task Form Section */}
+          <div className="order-1 lg:order-2">
+            <div className="lg:sticky lg:top-8">
+              <TaskForm />
+            </div>
+          </div>
         </div>
       </div>
     </div>

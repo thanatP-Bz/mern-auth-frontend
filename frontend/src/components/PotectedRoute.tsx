@@ -1,6 +1,6 @@
-import { type ReactNode } from "react";
-import { Navigate } from "react-router";
+import { Navigate } from "react-router-dom";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import type { ReactNode } from "react";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/auth" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

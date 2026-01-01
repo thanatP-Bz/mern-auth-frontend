@@ -5,7 +5,7 @@ export const useTaskContext = () => {
   const context = useContext(TaskContext);
 
   if (!context) {
-    throw new Error("useTaskContext must be use a TaskContextProvider");
+    throw new Error("useTaskContext must be used within TaskContextProvider");
   }
 
   return context;

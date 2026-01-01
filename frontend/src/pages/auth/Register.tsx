@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { registerUser } from "../../api/registerApi";
+import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../../api/auth/registerApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, BadgeAlert } from "lucide-react";
+import { BadgeCheck, BadgeAlert, User, Lock, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Lock, Mail } from "lucide-react";
 
 const Register = () => {
   const { dispatch } = useAuthContext();
@@ -30,18 +29,18 @@ const Register = () => {
       dispatch({
         type: "REGISTER",
         payload: {
-          user: data.user,
+          user: data.user, // ← Just pass the whole user object
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken || "",
+          refreshToken: data.refreshToken,
         },
       });
 
       toast("Register Successfully!", {
-        icon: <BadgeCheck className="w-5 h-5 text-green" />,
+        icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
         style: {
           background: "white",
           color: "green",
-          border: "green 1px solid",
+          border: "1px solid green",
         },
       });
 
@@ -49,12 +48,12 @@ const Register = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
-      toast(error.response?.data?.message || "somthing went wrong", {
-        icon: <BadgeAlert className="w-5 h-5 text-red" />,
+      toast(error.response?.data?.message || "Something went wrong", {
+        icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
         style: {
           background: "white",
           color: "red",
-          border: "red 1px solid",
+          border: "1px solid red",
         },
       });
     }
@@ -63,35 +62,38 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto p-8 bg-card rounded-2xl shadow-md ">
+    <div className="w-full max-w-sm mx-auto p-8 bg-white rounded-2xl shadow-md">
       <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
-          <Label>User</Label>
+          <Label>Name</Label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
-              className="pl-10  border-none"
-              type="name"
+              className="pl-10 border-none"
+              type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               placeholder="John Doe"
+              required
             />
           </div>
         </div>
+
         <div className="space-y-2">
           <Label>Email</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
-              className="pl-10  border-none"
+              className="pl-10 border-none"
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
               placeholder="you@example.com"
+              required
             />
           </div>
         </div>
@@ -101,23 +103,56 @@ const Register = () => {
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
-              className="pl-10  border-none"
+              className="pl-10 border-none"
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
               placeholder="••••••••"
+              required
             />
           </div>
         </div>
 
         <Button
           type="submit"
-          className="mt-5 w-full cursor-pointer bg-gray-800 text-white"
+          className="mt-5 w-full cursor-pointer bg-gray-800 text-white hover:bg-gray-900"
         >
-          submit
+          Submit
         </Button>
       </form>
+
+      {/* Navigation Links */}
+      <div className="mt-6 text-center space-y-3">
+        <p className="text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+          >
+            Login here
+          </Link>
+        </p>
+
+        <div className="pt-4 border-t border-gray-200">
+          <p className="text-sm text-gray-600">
+            Forgot your password?{" "}
+            <Link
+              to="/forget-password"
+              className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+            >
+              Reset it here
+            </Link>
+          </p>
+        </div>
+
+        <Link
+          to="/auth"
+          className="block text-sm text-gray-500 hover:text-gray-700 mt-4"
+        >
+          ← Back to options
+        </Link>
+      </div>
     </div>
   );
 };

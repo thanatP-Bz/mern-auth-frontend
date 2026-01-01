@@ -20,28 +20,51 @@ const initialState: TaskState = {
   currentTask: null,
 };
 
-const init = (initialState: TaskState) => {
-  const storedTask = localStorage.getItem("tasks");
+const init = (initialState: TaskState): TaskState => {
+  try {
+    const storedTasks = localStorage.getItem("tasks");
 
-  return {
-    ...initialState,
-    tasks: storedTask ? JSON.parse(storedTask) : [],
-  };
+    if (!storedTasks) {
+      return { ...initialState, tasks: [] };
+    }
+
+    const parsed = JSON.parse(storedTasks);
+
+    if (!Array.isArray(parsed)) {
+      localStorage.removeItem("tasks");
+      return { ...initialState, tasks: [] };
+    }
+
+    return { ...initialState, tasks: parsed };
+  } catch (error) {
+    console.error("❌ Failed to parse tasks from localStorage:", error);
+    localStorage.removeItem("tasks");
+    return { ...initialState, tasks: [] };
+  }
 };
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const TaskContext = createContext<TaskContextType | undefined>(
   undefined
 );
 
-interface AuthContextProviderProps {
+interface TaskContextProviderProps {
   children: ReactNode;
 }
 
-export const TaskContextProvider = ({ children }: AuthContextProviderProps) => {
+export const TaskContextProvider = ({ children }: TaskContextProviderProps) => {
   const [state, dispatch] = useReducer(taskReducer, initialState, init);
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    // Only save valid arrays to localStorage
+    if (Array.isArray(state.tasks)) {
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    } else {
+      console.error(
+        "❌ Attempted to save invalid tasks (not an array):",
+        state.tasks
+      );
+    }
   }, [state.tasks]);
 
   return (

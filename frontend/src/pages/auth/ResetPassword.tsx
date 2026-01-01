@@ -1,4 +1,4 @@
-import { resetPassword } from "@/api/resetPasswordApi";
+import { resetPassword } from "@/api/auth/resetPasswordApi";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {

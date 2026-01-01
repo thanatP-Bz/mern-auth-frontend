@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { loginUser } from "../../api/loginApi";
+import { Link, useNavigate } from "react-router";
+import { loginUser } from "../../api/auth/loginApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -30,9 +30,9 @@ const Login = () => {
       dispatch({
         type: "LOGIN",
         payload: {
-          user: data.user,
+          user: data.user, // ← Just pass the whole user object
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken || "",
+          refreshToken: data.refreshToken,
         },
       });
 
@@ -44,8 +44,7 @@ const Login = () => {
           border: "green 1px solid",
         },
       });
-
-      navigate("/");
+      navigate("/home", { replace: true });
     } catch (error: any) {
       console.log(error);
       toast(error.response?.data?.message || "somthing went wrong", {
@@ -103,6 +102,37 @@ const Login = () => {
           submit
         </Button>
       </form>
+
+      <div className="mt-6 text-center space-y-3">
+        <p className="text-sm text-gray-600">
+          haven't have an account yet?{" "}
+          <Link
+            to="/register"
+            className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+          >
+            register here
+          </Link>
+        </p>
+
+        <div className="pt-4 border-t border-gray-200">
+          <p className="text-sm text-gray-600">
+            Forgot your password?{" "}
+            <Link
+              to="/forget-password"
+              className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+            >
+              Reset it here
+            </Link>
+          </p>
+        </div>
+
+        <Link
+          to="/auth"
+          className="block text-sm text-gray-500 hover:text-gray-700 mt-4"
+        >
+          ← Back to options
+        </Link>
+      </div>
     </div>
   );
 };

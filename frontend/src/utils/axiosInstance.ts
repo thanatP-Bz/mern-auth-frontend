@@ -1,82 +1,158 @@
 import axios from "axios";
 
+console.log("🔧 Backend URL: http://localhost:4004/api/");
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4004/api",
+  baseURL: "http://localhost:4004/api/",
+  withCredentials: false, // ← Changed to false (no cookies)
 });
 
+// Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
+    console.log("📡 Making request to:", config.baseURL! + config.url);
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log("🔑 Request with token:", token.substring(0, 30) + "...");
+
+      // Decode and show token expiration
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const expiresAt = new Date(payload.exp * 1000);
+        const now = new Date();
+        const timeLeft = Math.floor(
+          (expiresAt.getTime() - now.getTime()) / 1000
+        );
+
+        console.log("⏰ Token expires at:", expiresAt.toLocaleTimeString());
+        console.log(
+          "⏳ Time left:",
+          timeLeft > 0 ? `${timeLeft}s` : "EXPIRED!"
+        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        console.log("⚠️ Could not decode token", e);
+      }
+    } else {
+      console.log("⚠️ No token found in localStorage");
     }
     return config;
   },
   (error) => {
+    console.error("❌ Request error:", error);
     return Promise.reject(error);
   }
 );
 
+// Response interceptor
 axiosInstance.interceptors.response.use(
-  // Success handler - just return response
-  (response) => response,
-
-  // Error handler - this is where the magic happens!
+  (response) => {
+    console.log("✅ Response success:", response.config.url, response.status);
+    return response;
+  },
   async (error) => {
-    // Save the original request that failed
+    console.error("❌ Response error:", {
+      url: error.config?.url,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message,
+    });
+
     const originalRequest = error.config;
 
-    // Check if:
-    // 1. Error is 401 (token expired)
-    // 2. We haven't already tried to refresh (prevent infinite loop)
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // Mark this request as "we tried to refresh for this one"
       originalRequest._retry = true;
 
+      console.log("🔄 ==========================================");
+      console.log("🔄 TOKEN REFRESH FLOW STARTED");
+      console.log("🔄 ==========================================");
+      console.log("⚠️ 401 Unauthorized - Token expired!");
+
+      const refreshToken = localStorage.getItem("refreshToken"); // ← Get from localStorage
+
+      if (!refreshToken) {
+        console.error("❌ No refresh token found in localStorage!");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/auth";
+        return Promise.reject(error);
+      }
+
+      console.log("🔄 Attempting to refresh token...");
+      console.log(
+        "🔑 Using refresh token:",
+        refreshToken.substring(0, 30) + "..."
+      );
+
       try {
-        // Get refresh token from localStorage
-        const refreshToken = localStorage.getItem("refreshToken");
+        console.log("📡 Calling refresh endpoint...");
 
-        // If no refresh token, can't refresh - throw error
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
-        }
-
-        // Call refresh-token endpoint
-        // IMPORTANT: Use regular axios, not axiosInstance (avoid interceptor loop!)
         const response = await axios.post(
-          "http://localhost:4004/api/auth/refresh-token",
-          { refreshToken }
+          `http://localhost:4004/api/auth/refresh-token`,
+          { refreshToken: refreshToken } // ← Send in body
         );
 
-        // Get the new access token from response
+        console.log("✅ Refresh response received:", response.status);
+
         const newAccessToken = response.data.accessToken;
 
-        // Save new access token to localStorage
-        localStorage.setItem("accessToken", newAccessToken);
+        if (!newAccessToken) {
+          console.error("❌ No access token in refresh response!");
+          throw new Error("No token received");
+        }
 
-        // Update the original request with new token
+        console.log(
+          "🆕 New access token received:",
+          newAccessToken.substring(0, 30) + "..."
+        );
+
+        // Decode and show new token expiration
+        try {
+          const payload = JSON.parse(atob(newAccessToken.split(".")[1]));
+          const expiresAt = new Date(payload.exp * 1000);
+          console.log(
+            "⏰ New token expires at:",
+            expiresAt.toLocaleTimeString()
+          );
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
+          console.log("⚠️ Could not decode new token", e);
+        }
+
+        localStorage.setItem("token", newAccessToken); // ← Save new token
+        console.log("💾 New access token saved to localStorage");
+
+        // Update the failed request with new token
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        console.log("🔄 Retrying original request with new token...");
+        console.log("🔄 ==========================================");
 
-        // Retry the original request with new token
         return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        // Refresh failed - token is truly expired or invalid
-        // Clear everything and redirect to login
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (refreshError: any) {
+        console.log("🔄 ==========================================");
+        console.error("❌ TOKEN REFRESH FAILED!");
+        console.log("🔄 ==========================================");
+        console.error(
+          "Error:",
+          refreshError.response?.data || refreshError.message
+        );
+        console.log("🚪 Logging out and redirecting to /auth...");
 
-        // Redirect to login page
-        window.location.href = "/auth/login";
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken"); // ← Also remove refresh token
+        localStorage.removeItem("user");
+        window.location.href = "/auth";
 
         return Promise.reject(refreshError);
       }
     }
 
-    // If error is not 401, or we already tried refreshing, just throw it
     return Promise.reject(error);
   }
 );
+
 export default axiosInstance;

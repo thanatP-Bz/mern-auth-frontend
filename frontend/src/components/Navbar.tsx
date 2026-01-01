@@ -9,7 +9,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch({ type: "LOGOUT" });
-    navigate("/login");
+    navigate("/auth");
   };
 
   return (

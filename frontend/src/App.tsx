@@ -1,5 +1,10 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import Auth from "./pages/auth/Auth";
+import AuthLayout from "./components/AuthLayout";
 import Home from "./pages/Home";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
@@ -8,23 +13,88 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import TaskDetail from "./components/TaskDetail";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/PotectedRoute";
+import { useAuthContext } from "./hooks/useAuthContext";
+
+// Root redirect - sends users to correct starting page
+const RootRedirect = () => {
+  const { user } = useAuthContext();
+
+  if (user) {
+    console.log("✅ User logged in, redirecting to /home");
+    return <Navigate to="/home" replace />;
+  }
+
+  console.log("👤 No user, redirecting to /auth");
+  return <Navigate to="/auth" replace />;
+};
+
+// Auth page wrapper - redirect if already logged in
+const AuthPage = () => {
+  const { user } = useAuthContext();
+
+  if (user) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return <Auth />;
+};
 
 const router = createBrowserRouter([
-  { path: "auth", element: <Auth /> },
-  { path: "register", element: <Register /> },
-  { path: "login", element: <Login /> },
-  { path: "forget-password", element: <ForgetPassword /> },
-  { path: "reset-password/:token", element: <ResetPassword /> },
+  // Root - Redirects based on auth status
   {
     path: "/",
+    element: <RootRedirect />,
+  },
+
+  // Protected home
+  {
+    path: "/home",
     element: (
       <ProtectedRoute>
         <Home />
       </ProtectedRoute>
     ),
   },
-  { path: "task/:id", element: <TaskDetail /> },
+
+  // Auth routes - Using AuthLayout with Outlet
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "auth",
+        element: <AuthPage />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "forget-password",
+        element: <ForgetPassword />,
+      },
+      {
+        path: "reset-password/:token",
+        element: <ResetPassword />,
+      },
+    ],
+  },
+
+  // Task detail - Protected
+  {
+    path: "/task/:id",
+    element: (
+      <ProtectedRoute>
+        <TaskDetail />
+      </ProtectedRoute>
+    ),
+  },
 ]);
+
 function App() {
   return (
     <>
