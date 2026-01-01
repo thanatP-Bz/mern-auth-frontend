@@ -21,17 +21,6 @@ const initialState: AuthState = {
   refreshToken: localStorage.getItem("refreshToken"),
 };
 
-const init = (initialState: AuthState) => {
-  const storedUser = localStorage.getItem("user");
-  const storedToken = localStorage.getItem("accessToken");
-
-  return {
-    ...initialState,
-    user: storedUser ? JSON.parse(storedUser) : null,
-    access: storedToken,
-  };
-};
-
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
@@ -41,7 +30,7 @@ interface AuthContextProviderProps {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [state, dispatch] = useReducer(authReducer, initialState, init);
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch }}>
