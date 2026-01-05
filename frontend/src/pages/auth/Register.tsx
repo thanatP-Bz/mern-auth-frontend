@@ -16,6 +16,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,6 +36,8 @@ const Register = () => {
         },
       });
 
+      setShowVerificationMessage(true);
+
       toast("Register Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
         style: {
@@ -47,15 +50,21 @@ const Register = () => {
       navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log(error);
-      toast(error.response?.data?.message || "Something went wrong", {
-        icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
-        style: {
-          background: "white",
-          color: "red",
-          border: "1px solid red",
-        },
-      });
+      const message = error.response?.data?.message;
+
+      toast(
+        (message?.includes("verification")
+          ? "Please verify email before logging in, check your inbox"
+          : message) || "Something went wrong",
+        {
+          icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
+          style: {
+            background: "white",
+            color: "red",
+            border: "1px solid red",
+          },
+        }
+      );
     }
 
     setForm({ name: "", email: "", password: "" });
@@ -152,6 +161,16 @@ const Register = () => {
         >
           ← Back to options
         </Link>
+
+        {showVerificationMessage && (
+          <div>
+            <h3>Check Your Email!</h3>
+            <p>
+              We're send the verification link to your email. Please check your
+              inbox
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

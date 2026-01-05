@@ -1,12 +1,11 @@
-export interface User {
-  _id: string;
-  email: string;
-  token: string;
-}
-
-export interface AuthUser {
+export interface RegisterResponse {
   message: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    isVerified: boolean;
+  };
   accessToken: string;
-  refreshToken?: string;
-  user: User;
+  refreshToken: string;
 }

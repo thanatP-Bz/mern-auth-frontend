@@ -14,6 +14,7 @@ import TaskDetail from "./components/TaskDetail";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/PotectedRoute";
 import { useAuthContext } from "./hooks/useAuthContext";
+import VerifyEmail from "./pages/auth/VerifyEmail";
 
 // Root redirect - sends users to correct starting page
 const RootRedirect = () => {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: "reset-password/:token",
         element: <ResetPassword />,
+      },
+      {
+        path: "verify-email",
+        element: <VerifyEmail />,
       },
     ],
   },
