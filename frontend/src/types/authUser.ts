@@ -1,4 +1,4 @@
-export interface RegisterResponse {
+export interface authResponse {
   message: string;
   user: {
     _id: string;

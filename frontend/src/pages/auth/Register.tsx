@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { registerUser } from "../../api/auth/registerApi";
+import { resendVerificationEmail } from "@/api/auth/resendVerificationEmail";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,14 @@ import { Label } from "@/components/ui/label";
 
 const Register = () => {
   const { dispatch } = useAuthContext();
-  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
   });
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,9 +26,25 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("click");
+
+    if (form.password.length < 8) {
+      toast("Password must be at least 8 characters", {
+        icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
+        style: {
+          background: "white",
+          color: "red",
+          border: "1px solid red",
+        },
+      });
+      return false;
+    }
 
     try {
       const data = await registerUser(form.name, form.email, form.password);
+      setUserEmail(form.email);
+      setShowVerificationMessage(true);
+
       dispatch({
         type: "REGISTER",
         payload: {
@@ -35,8 +53,6 @@ const Register = () => {
           refreshToken: data.refreshToken,
         },
       });
-
-      setShowVerificationMessage(true);
 
       toast("Register Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
@@ -47,7 +63,6 @@ const Register = () => {
         },
       });
 
-      navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const message = error.response?.data?.message;
@@ -69,6 +84,52 @@ const Register = () => {
 
     setForm({ name: "", email: "", password: "" });
   };
+  console.log(userEmail);
+  const handleResendEmail = async () => {
+    try {
+      setLoading(true);
+      await resendVerificationEmail(userEmail);
+      toast("Verification email resent Successfully!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
+        style: {
+          background: "white",
+          color: "green",
+          border: "1px solid green",
+        },
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message = error.response?.data?.message;
+      toast(message || "Something went wrong", {
+        icon: <BadgeAlert className="w-5 h-5 text-red-500" />,
+        style: {
+          background: "white",
+          color: "red",
+          border: "1px solid red",
+        },
+      });
+    }
+  };
+
+  if (showVerificationMessage) {
+    return (
+      <div>
+        <p>
+          We sent a verification link to <strong>{userEmail}</strong>
+          Please check your inbox and click the link to verify your account
+        </p>
+        <button
+          type="submit"
+          onClick={handleResendEmail}
+          disabled={loading}
+          className="cursor-pointer"
+        >
+          didn't get email? resend
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-sm mx-auto p-8 bg-white rounded-2xl shadow-md">
@@ -127,7 +188,7 @@ const Register = () => {
           type="submit"
           className="mt-5 w-full cursor-pointer bg-gray-800 text-white hover:bg-gray-900"
         >
-          Submit
+          submit
         </Button>
       </form>
 

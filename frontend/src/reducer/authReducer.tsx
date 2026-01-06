@@ -26,7 +26,16 @@ export const authReducer = (
   action: AuthAction
 ): AuthState => {
   switch (action.type) {
-    case "REGISTER":
+    case "REGISTER": {
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+
+      return {
+        user: action.payload.user,
+        accessToken: null, // ← No token until verified
+        refreshToken: null,
+      };
+    }
+
     case "LOGIN": {
       // ✅ Combined both cases - they do the same thing
       localStorage.setItem("accessToken", action.payload.accessToken);
@@ -85,6 +94,14 @@ export const init = (initialState: AuthState): AuthState => {
     }
 
     const user = JSON.parse(storedUser);
+    console.log("✅ Loaded user from localStorage:", user.email);
+
+    if (!user || !user.email || !user._id) {
+      console.log("⚠️ Invalid user data in localStorage, clearing...");
+      localStorage.clear();
+      return initialState;
+    }
+
     console.log("✅ Loaded user from localStorage:", user.email);
 
     return {

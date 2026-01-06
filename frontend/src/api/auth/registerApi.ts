@@ -1,12 +1,12 @@
 import api from "axios";
-import type { RegisterResponse } from "@/types/authUser";
+import type { authResponse } from "@/types/authUser";
 
 export const registerUser = async (
   name: string,
   email: string,
   password: string
-): Promise<RegisterResponse> => {
-  const res = await api.post<RegisterResponse>(
+): Promise<authResponse> => {
+  const res = await api.post<authResponse>(
     "http://localhost:4004/api/auth/register",
     {
       name,
@@ -14,5 +14,6 @@ export const registerUser = async (
       password,
     }
   );
+  console.log("📦 Full response from backend:", res.data);
   return res.data;
 };
