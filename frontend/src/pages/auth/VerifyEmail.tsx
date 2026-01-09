@@ -37,9 +37,6 @@ const VerifyEmail = () => {
         }, 5000);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.log("❌ Verification failed:", error);
-        console.log("❌ Error response:", error.response?.data);
-
         setStatus("error");
         setMessage(error.response?.data?.message || "Verification failed");
       }

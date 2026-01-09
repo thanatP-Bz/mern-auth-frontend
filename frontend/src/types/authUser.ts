@@ -6,6 +6,4 @@ export interface authResponse {
     email: string;
     isVerified: boolean;
   };
-  accessToken: string;
-  refreshToken: string;
 }

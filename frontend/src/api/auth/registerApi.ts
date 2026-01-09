@@ -1,4 +1,4 @@
-import api from "axios";
+import api from "../axios/axiosConfig";
 import type { authResponse } from "@/types/authUser";
 
 export const registerUser = async (
@@ -6,14 +6,11 @@ export const registerUser = async (
   email: string,
   password: string
 ): Promise<authResponse> => {
-  const res = await api.post<authResponse>(
-    "http://localhost:4004/api/auth/register",
-    {
-      name,
-      email,
-      password,
-    }
-  );
+  const res = await api.post<authResponse>("/api/auth/register", {
+    name,
+    email,
+    password,
+  });
   console.log("📦 Full response from backend:", res.data);
   return res.data;
 };

@@ -49,8 +49,6 @@ const Register = () => {
         type: "REGISTER",
         payload: {
           user: data.user, // ← Just pass the whole user object
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
         },
       });
 
