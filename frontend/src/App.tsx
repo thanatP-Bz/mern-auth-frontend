@@ -10,6 +10,7 @@ import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import ForgetPassword from "./pages/auth/ForgetPassword";
+import ChangePassword from "./pages/auth/ChangePassword";
 import TaskDetail from "./components/TaskDetail";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/PotectedRoute";
@@ -87,6 +88,17 @@ const router = createBrowserRouter([
         element: <VerifyEmail />,
       },
     ],
+  },
+
+  //change passward
+
+  {
+    path: "/change-password",
+    element: (
+      <ProtectedRoute>
+        <ChangePassword />
+      </ProtectedRoute>
+    ),
   },
 
   // Task detail - Protected

@@ -27,6 +27,14 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // ⭐ CRITICAL: Don't intercept the refresh-token endpoint itself!
+    if (originalRequest.url?.includes("/refresh-token")) {
+      console.error("❌ Refresh token failed, user needs to login again");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
     // Check if error is 401 (Unauthorized) and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Mark that we're retrying to prevent infinite loop
@@ -46,15 +54,11 @@ api.interceptors.response.use(
         // Now retry the original request with the new token
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh token is also expired or invalid
-        console.error("❌ Refresh token failed, user needs to login again");
-
-        // Clear user data from localStorage
+        // This catch block should rarely be hit now because we handle
+        // refresh-token failures at the top
+        console.error("❌ Refresh failed in catch block");
         localStorage.removeItem("user");
-
-        // Redirect to login page
         window.location.href = "/login";
-
         return Promise.reject(refreshError);
       }
     }
