@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/PotectedRoute";
 import { useAuthContext } from "./hooks/useAuthContext";
 import VerifyEmail from "./pages/auth/VerifyEmail";
+import { Verify2FA } from "./pages/auth/Verify2FA";
 
 // Root redirect - sends users to correct starting page
 const RootRedirect = () => {
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
         path: "login",
         element: <Login />,
       },
+      { path: "verify-2fa", element: <Verify2FA /> },
       {
         path: "register",
         element: <Register />,

@@ -26,13 +26,30 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const data = await loginUser(form.email, form.password);
-      dispatch({
-        type: "LOGIN",
-        payload: {
-          user: data.user, // ← Just pass the whole user object
-        },
-      });
+      const response = await loginUser(form.email, form.password);
+
+      //check 2FA is required
+      if ("requires2FA" in response && response.requires2FA) {
+        dispatch({
+          type: "REQUIRE_2FA",
+          payload: {
+            userId: response.userId,
+            message: response.message,
+          },
+        });
+
+        navigate("/verify-2fa");
+        return;
+      }
+
+      if ("user" in response) {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            user: response.user,
+          },
+        });
+      }
 
       toast("Login Successfully!", {
         icon: <BadgeCheck className="w-5 h-5 text-green" />,

@@ -6,6 +6,7 @@ export interface User {
 
 export interface AuthState {
   user: User | null;
+  pendingUserId?: string | null;
 }
 
 export type AuthAction =
@@ -17,6 +18,7 @@ export type AuthAction =
       type: "LOGIN";
       payload: { user: User };
     }
+  | { type: "REQUIRE_2FA"; payload: { userId: string; message: string } }
   | { type: "LOGOUT" };
 
 export const authReducer = (
@@ -42,6 +44,14 @@ export const authReducer = (
 
       return {
         user: action.payload.user,
+      };
+    }
+
+    case "REQUIRE_2FA": {
+      return {
+        ...state,
+        user: null,
+        pendingUserId: action.payload.userId,
       };
     }
 
