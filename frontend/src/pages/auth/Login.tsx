@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { loginUser } from "../../api/auth/loginApi";
+import { loginUser } from "../../api/authentication/auth/loginApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";

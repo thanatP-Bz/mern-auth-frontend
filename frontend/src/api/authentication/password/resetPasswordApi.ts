@@ -1,4 +1,4 @@
-import api from "../axios/axiosConfig";
+import api from "@/api/axios/axiosConfig";
 
 export const resetPassword = async (token: string, newPassword: string) => {
   const res = await api.post(`/api/auth/reset-password/${token}`, {

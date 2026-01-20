@@ -1,6 +1,8 @@
 export interface User {
   _id: string;
   email: string;
+  twoFactorEnabled: boolean;
+
   // ❌ Removed token - we store accessToken and refreshToken separately
 }
 
@@ -19,11 +21,12 @@ export type AuthAction =
       payload: { user: User };
     }
   | { type: "REQUIRE_2FA"; payload: { userId: string; message: string } }
+  | { type: "UPDATE_USER"; payload: { user: User } }
   | { type: "LOGOUT" };
 
 export const authReducer = (
   state: AuthState,
-  action: AuthAction
+  action: AuthAction,
 ): AuthState => {
   switch (action.type) {
     case "REGISTER": {
@@ -52,6 +55,16 @@ export const authReducer = (
         ...state,
         user: null,
         pendingUserId: action.payload.userId,
+      };
+    }
+
+    case "UPDATE_USER": {
+      const updatedUser = action.payload.user;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      return {
+        ...state,
+        user: updatedUser,
       };
     }
 

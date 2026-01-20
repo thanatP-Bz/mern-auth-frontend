@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { verify2FALoginApi } from "@/api/auth/verify2faLoginApi";
+import { verify2FALoginApi } from "@/api/authentication/2FA/verify2faLoginApi";
 
 export const Verify2FA = () => {
   const [code, setCode] = useState("");

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { registerUser } from "../../api/auth/registerApi";
-import { resendVerificationEmail } from "@/api/auth/resendVerificationEmail";
+import { registerUser } from "../../api/authentication/auth/registerApi";
+import { resendVerificationEmail } from "@/api/authentication/email/resendVerificationEmail";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -76,7 +76,7 @@ const Register = () => {
             color: "red",
             border: "1px solid red",
           },
-        }
+        },
       );
     }
 

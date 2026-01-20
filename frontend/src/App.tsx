@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/PotectedRoute";
 import { useAuthContext } from "./hooks/useAuthContext";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { Verify2FA } from "./pages/auth/Verify2FA";
+import Security from "./pages/auth/Security";
 
 // Root redirect - sends users to correct starting page
 const RootRedirect = () => {
@@ -99,6 +100,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <ChangePassword />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/security",
+    element: (
+      <ProtectedRoute>
+        <Security />
       </ProtectedRoute>
     ),
   },

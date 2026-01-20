@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { verifyEmail } from "@/api/auth/verifyEmail";
+import { verifyEmail } from "@/api/authentication/email/verifyEmail";
 import { Button } from "@/components/ui/button";
 import { BadgeCheck, BadgeAlert, Loader2 } from "lucide-react";
 
@@ -9,10 +9,10 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">(
-    !token ? "error" : "loading"
+    !token ? "error" : "loading",
   );
   const [message, setMessage] = useState(
-    !token ? "invalid verification link" : ""
+    !token ? "invalid verification link" : "",
   );
 
   // ✅ Add a ref to track if verification already ran

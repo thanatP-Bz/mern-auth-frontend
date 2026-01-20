@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { changePasswordApi } from "@/api/auth/changePasswordApi";
+import { changePasswordApi } from "@/api/authentication/password/changePasswordApi";
 import { toast } from "sonner";
 import {
   BadgeAlert,
@@ -257,8 +257,8 @@ const ChangePassword = () => {
                       passwordStrength.strength <= 2
                         ? "text-orange-600"
                         : passwordStrength.strength <= 3
-                        ? "text-yellow-600"
-                        : "text-green-600"
+                          ? "text-yellow-600"
+                          : "text-green-600"
                     }`}
                   >
                     {passwordStrength.label}
