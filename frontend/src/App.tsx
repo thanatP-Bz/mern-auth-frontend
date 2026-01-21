@@ -4,7 +4,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import Auth from "./pages/auth/Auth";
-import AuthLayout from "./components/AuthLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import ProtectedLayout from "./layouts/ProtectedLayout";
 import Home from "./pages/Home";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
@@ -19,108 +20,80 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import { Verify2FA } from "./pages/auth/Verify2FA";
 import Security from "./pages/auth/Security";
 
-// Root redirect - sends users to correct starting page
+// Root redirect
 const RootRedirect = () => {
   const { user } = useAuthContext();
-
-  if (user) {
-    console.log("✅ User logged in, redirecting to /home");
-    return <Navigate to="/home" replace />;
-  }
-
-  console.log("👤 No user, redirecting to /auth");
-  return <Navigate to="/auth" replace />;
+  return user ? (
+    <Navigate to="/home" replace />
+  ) : (
+    <Navigate to="/auth" replace />
+  );
 };
 
-// Auth page wrapper - redirect if already logged in
+// Auth page wrapper
 const AuthPage = () => {
   const { user } = useAuthContext();
-
-  if (user) {
-    return <Navigate to="/home" replace />;
-  }
-
-  return <Auth />;
+  return user ? <Navigate to="/home" replace /> : <Auth />;
 };
 
 const router = createBrowserRouter([
-  // Root - Redirects based on auth status
+  // Root
   {
     path: "/",
     element: <RootRedirect />,
   },
 
-  // Protected home
+  // ========== PUBLIC ROUTES (No Navbar) ==========
   {
-    path: "/home",
-    element: (
-      <ProtectedRoute>
-        <Home />
-      </ProtectedRoute>
-    ),
-  },
-
-  // Auth routes - Using AuthLayout with Outlet
-  {
-    path: "/",
     element: <AuthLayout />,
     children: [
-      {
-        path: "auth",
-        element: <AuthPage />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
+      { path: "auth", element: <AuthPage /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
       { path: "verify-2fa", element: <Verify2FA /> },
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
-        path: "forget-password",
-        element: <ForgetPassword />,
-      },
-      {
-        path: "reset-password/:token",
-        element: <ResetPassword />,
-      },
-      {
-        path: "verify-email",
-        element: <VerifyEmail />,
-      },
+      { path: "verify-email", element: <VerifyEmail /> },
+      { path: "forget-password", element: <ForgetPassword /> },
+      { path: "reset-password/:token", element: <ResetPassword /> },
     ],
   },
 
-  //change passward
-
+  // ========== PROTECTED ROUTES (With Navbar) ==========
   {
-    path: "/change-password",
-    element: (
-      <ProtectedRoute>
-        <ChangePassword />
-      </ProtectedRoute>
-    ),
-  },
-
-  {
-    path: "/security",
-    element: (
-      <ProtectedRoute>
-        <Security />
-      </ProtectedRoute>
-    ),
-  },
-
-  // Task detail - Protected
-  {
-    path: "/task/:id",
-    element: (
-      <ProtectedRoute>
-        <TaskDetail />
-      </ProtectedRoute>
-    ),
+    element: <ProtectedLayout />,
+    children: [
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "security",
+        element: (
+          <ProtectedRoute>
+            <Security />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "change-password",
+        element: (
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "task/:id",
+        element: (
+          <ProtectedRoute>
+            <TaskDetail />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);
 

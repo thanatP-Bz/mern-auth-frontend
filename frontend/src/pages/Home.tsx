@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { fetchTasks } from "../api/task/taskApi";
 import { useTaskContext } from "../hooks/useTaskContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import Navbar from "../components/Navbar";
 import Task from "./Task";
 
 const Home = () => {
@@ -27,7 +26,6 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
       <Task />
     </div>
   );

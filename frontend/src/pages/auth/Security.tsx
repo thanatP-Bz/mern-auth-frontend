@@ -1,44 +1,80 @@
 import { useState } from "react";
 import Enable2FAModal from "@/components/Enable2FAModal";
+import Disable2FAModal from "@/components/Disable2FAModal";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { Shield, ShieldCheck } from "lucide-react";
 
 const Security = () => {
   const [showEnableModal, setShowEnableModal] = useState(false);
+  const [showDisableModal, setShowDisableModal] = useState(false);
   const { user, dispatch } = useAuthContext();
 
   const twoFactorEnabled = user?.twoFactorEnabled || false;
 
   return (
-    <div>
-      <h1>Security Settings</h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          Security Settings
+        </h1>
 
-      <div>
-        <h2>Two-Factor Authentication</h2>
+        {/* 2FA Card */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center gap-3 mb-4">
+            {twoFactorEnabled ? (
+              <ShieldCheck className="w-6 h-6 text-green-600" />
+            ) : (
+              <Shield className="w-6 h-6 text-gray-400" />
+            )}
+            <h2 className="text-xl font-semibold text-gray-900">
+              Two-Factor Authentication
+            </h2>
+          </div>
 
-        {!twoFactorEnabled ? (
-          <div>
-            <p>Two-Factor Authentication is currently disabled</p>
-            <button
-              onClick={() => setShowEnableModal(true)}
-              className="cursor-pointer"
-            >
-              Enable 2FA
-            </button>
-          </div>
-        ) : (
-          <div>
-            <p>✅ Two-Factor Authentication is enabled</p>
-            <button className="cursor-pointer">Disable 2FA</button>
-            <button className="cursor-pointer">Regenerate Backup Codes</button>
-          </div>
-        )}
+          {!twoFactorEnabled ? (
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                Add an extra layer of security to your account. You'll need to
+                enter a code from your authenticator app when you sign in.
+              </p>
+              <button
+                onClick={() => setShowEnableModal(true)}
+                className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors"
+              >
+                Enable 2FA
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
+                <ShieldCheck className="w-5 h-5" />
+                <span className="font-medium">
+                  Two-Factor Authentication is active
+                </span>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowDisableModal(true)}
+                  className="cursor-pointer bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 rounded-lg transition-colors"
+                >
+                  Disable 2FA
+                </button>
+                <button className="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium px-6 py-2 rounded-lg transition-colors">
+                  Regenerate Backup Codes
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Modals */}
       {showEnableModal && (
         <Enable2FAModal
           onClose={() => setShowEnableModal(false)}
           onSuccess={() => {
-            // Update user state with twoFactorEnabled: true
             if (user) {
               dispatch({
                 type: "UPDATE_USER",
@@ -51,6 +87,26 @@ const Security = () => {
               });
             }
             setShowEnableModal(false);
+          }}
+        />
+      )}
+
+      {showDisableModal && (
+        <Disable2FAModal
+          onClose={() => setShowDisableModal(false)}
+          onSuccess={() => {
+            if (user) {
+              dispatch({
+                type: "UPDATE_USER",
+                payload: {
+                  user: {
+                    ...user,
+                    twoFactorEnabled: false,
+                  },
+                },
+              });
+            }
+            setShowDisableModal(false);
           }}
         />
       )}
