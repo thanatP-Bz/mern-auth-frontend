@@ -42,3 +42,8 @@ export interface Verify2FASetupResponse {
 export interface Disable2FAReponse {
   message: string;
 }
+
+export interface RegenerateBackupCodesResponse {
+  message: string;
+  backupCodes: string[];
+}

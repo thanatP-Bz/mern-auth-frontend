@@ -1,12 +1,14 @@
 import { useState } from "react";
 import Enable2FAModal from "@/components/Enable2FAModal";
 import Disable2FAModal from "@/components/Disable2FAModal";
+import RegenerateBackupCodesModal from "@/components/RegenerateBackupCodesModal";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Shield, ShieldCheck } from "lucide-react";
 
 const Security = () => {
   const [showEnableModal, setShowEnableModal] = useState(false);
   const [showDisableModal, setShowDisableModal] = useState(false);
+  const [showRegenerateModal, setShowRegenerateModal] = useState(false);
   const { user, dispatch } = useAuthContext();
 
   const twoFactorEnabled = user?.twoFactorEnabled || false;
@@ -61,7 +63,10 @@ const Security = () => {
                 >
                   Disable 2FA
                 </button>
-                <button className="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium px-6 py-2 rounded-lg transition-colors">
+                <button
+                  onClick={() => setShowRegenerateModal(true)}
+                  className="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium px-6 py-2 rounded-lg transition-colors"
+                >
                   Regenerate Backup Codes
                 </button>
               </div>
@@ -108,6 +113,13 @@ const Security = () => {
             }
             setShowDisableModal(false);
           }}
+        />
+      )}
+
+      {/* regenrate backup codes */}
+      {showRegenerateModal && (
+        <RegenerateBackupCodesModal
+          onClose={() => setShowRegenerateModal(false)}
         />
       )}
     </div>
