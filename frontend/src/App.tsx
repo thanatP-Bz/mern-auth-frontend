@@ -19,6 +19,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { Verify2FA } from "./pages/auth/Verify2FA";
 import Security from "./pages/auth/Security";
+import OAuthCallback from "./pages/auth/OauthCallback";
 
 // Root redirect
 const RootRedirect = () => {
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
       { path: "verify-email", element: <VerifyEmail /> },
       { path: "forget-password", element: <ForgetPassword /> },
       { path: "reset-password/:token", element: <ResetPassword /> },
+      { path: "/auth/callback", element: <OAuthCallback /> },
     ],
   },
 

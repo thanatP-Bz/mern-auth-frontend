@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Mail } from "lucide-react";
 import { BadgeCheck, BadgeAlert } from "lucide-react";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 const Login = () => {
   const { dispatch } = useAuthContext();
@@ -119,6 +120,24 @@ const Login = () => {
       </form>
 
       <div className="mt-6 text-center space-y-3">
+        {/* google button */}
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-card text-gray-500">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <GoogleLoginButton />
+          </div>
+        </div>
+
         <p className="text-sm text-gray-600">
           haven't have an account yet?{" "}
           <Link
