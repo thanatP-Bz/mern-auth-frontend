@@ -1,7 +1,9 @@
 const GoogleLoginButton = () => {
   const handleGoogleLogin = () => {
-    // Redirect to backend OAuth route
-    window.location.href = "http://localhost:4004/api/auth/google";
+    // ✅ Use environment variable instead of hardcoded URL
+    const backendUrl =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:4004";
+    window.location.href = `${backendUrl}/api/auth/google`;
   };
 
   return (

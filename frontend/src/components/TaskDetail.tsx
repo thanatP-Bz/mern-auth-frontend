@@ -209,9 +209,9 @@ const TaskDetail = () => {
                 <div className="pt-4 border-t border-gray-100">
                   <Button
                     onClick={() => setIsEdit(true)}
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto cursor-pointer"
                   >
-                    <Edit className="w-4 h-4 mr-2" />
+                    <Edit className="w-4 h-4 mr-2 cursor-pointer" />
                     Edit Task
                   </Button>
                 </div>
@@ -265,16 +265,19 @@ const TaskDetail = () => {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4 border-t border-gray-100">
-                  <Button onClick={handleUpdate} className="flex-1">
+                  <Button
+                    onClick={handleUpdate}
+                    className="flex-1 cursor-pointer"
+                  >
                     <Save className="w-4 h-4 mr-2" />
                     Save Changes
                   </Button>
                   <Button
                     variant="outline"
                     onClick={handleCancel}
-                    className="flex-1"
+                    className="flex-1 cursor-pointer"
                   >
-                    <X className="w-4 h-4 mr-2" />
+                    <X className="w-4 h-4 mr-" />
                     Cancel
                   </Button>
                 </div>

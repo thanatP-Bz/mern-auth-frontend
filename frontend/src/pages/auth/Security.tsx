@@ -12,6 +12,8 @@ const Security = () => {
   const { user, dispatch } = useAuthContext();
 
   const twoFactorEnabled = user?.twoFactorEnabled || false;
+  const hasPassword = user?.hasPassword ?? true; // ✅ Add this
+  console.log(hasPassword);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -34,7 +36,20 @@ const Security = () => {
             </h2>
           </div>
 
-          {!twoFactorEnabled ? (
+          {/* ✅ Show message for Google OAuth users */}
+          {!hasPassword ? (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-gray-700">
+                You signed in with <span className="font-semibold">Google</span>
+                .
+              </p>
+              <p className="text-sm text-gray-600 mt-1">
+                Two-Factor Authentication is not available for accounts using
+                Google sign-in, as your account is already secured through
+                Google.
+              </p>
+            </div>
+          ) : !twoFactorEnabled ? (
             <div className="space-y-4">
               <p className="text-gray-600">
                 Add an extra layer of security to your account. You'll need to

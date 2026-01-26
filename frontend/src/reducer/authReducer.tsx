@@ -2,6 +2,8 @@ export interface User {
   _id: string;
   email: string;
   twoFactorEnabled: boolean;
+  hasPassword: boolean;
+  authProvider?: string;
 
   // ❌ Removed token - we store accessToken and refreshToken separately
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:4004",
+  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:4004", // ✅ Use env variable
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -16,7 +16,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 api.interceptors.response.use(
@@ -47,7 +47,7 @@ api.interceptors.response.use(
         await api.post("/api/auth/refresh-token");
 
         console.log(
-          "✅ Token refreshed successfully, retrying original request"
+          "✅ Token refreshed successfully, retrying original request",
         );
 
         // The new accessToken cookie is set AUTOMATICALLY by backend!
@@ -66,7 +66,7 @@ api.interceptors.response.use(
     // For other errors, just log and reject
     console.error("API error:", error.response?.data?.message || error.message);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

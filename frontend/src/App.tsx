@@ -14,7 +14,7 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import ChangePassword from "./pages/auth/ChangePassword";
 import TaskDetail from "./components/TaskDetail";
 import { Toaster } from "@/components/ui/sonner";
-import ProtectedRoute from "./components/PotectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuthContext } from "./hooks/useAuthContext";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { Verify2FA } from "./pages/auth/Verify2FA";

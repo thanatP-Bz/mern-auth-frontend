@@ -3,6 +3,8 @@
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import { logout } from "@/api/authentication/auth/logoutApi"; // ✅ Import logout API
+import { toast } from "sonner";
 import {
   User,
   LogOut,
@@ -10,18 +12,63 @@ import {
   KeyRound,
   ChevronDown,
   Mail,
+  BadgeCheck,
+  BadgeAlert,
 } from "lucide-react";
 
 const Navbar = () => {
   const { user, dispatch } = useAuthContext();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // ✅ Loading state
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleLogout = () => {
-    dispatch({ type: "LOGOUT" });
-    navigate("/auth");
-    setIsDropdownOpen(false);
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      // ✅ Call backend logout API
+      await logout();
+
+      // Clear local state
+      dispatch({ type: "LOGOUT" });
+
+      toast("Logged out successfully!", {
+        icon: <BadgeCheck className="w-5 h-5 text-green-500" />,
+        style: {
+          background: "white",
+          color: "green",
+          border: "1px solid green",
+        },
+      });
+
+      navigate("/auth");
+      setIsDropdownOpen(false);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Logout error:", error);
+
+      // Even if API fails, still log out locally
+      dispatch({ type: "LOGOUT" });
+
+      toast(
+        error.response?.data?.message ||
+          "Logout failed, but you've been logged out locally",
+        {
+          icon: <BadgeAlert className="w-5 h-5 text-orange-500" />,
+          style: {
+            background: "white",
+            color: "orange",
+            border: "1px solid orange",
+          },
+        },
+      );
+
+      navigate("/auth");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   // Close dropdown when clicking outside
@@ -45,7 +92,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:from-indigo-700 hover:to-purple-700 transition-all"
+          className="text-xl font-bold tracking-tight bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:from-indigo-700 hover:to-purple-700 transition-all"
         >
           TaskApp
         </Link>
@@ -59,7 +106,7 @@ const Navbar = () => {
               className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
                   {user.email?.[0]?.toUpperCase() || "U"}
                 </div>
               </div>
@@ -76,7 +123,7 @@ const Navbar = () => {
                 {/* User Info Section */}
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold">
                       {user.email?.[0]?.toUpperCase() || "U"}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -125,10 +172,11 @@ const Navbar = () => {
                 <div className="border-t border-gray-100 pt-1 mt-1">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full"
+                    disabled={isLoggingOut}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>Logout</span>
+                    <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
                   </button>
                 </div>
               </div>
