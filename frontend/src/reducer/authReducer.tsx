@@ -1,6 +1,7 @@
 export interface User {
   _id: string;
   email: string;
+  name: string;
   twoFactorEnabled: boolean;
   hasPassword: boolean;
   authProvider?: string;

@@ -5,6 +5,7 @@ export interface RegiesterSuccessResponse {
     name: string;
     email: string;
     twoFactorEnabled: boolean;
+    hasPassword: boolean;
   };
 }
 
@@ -22,6 +23,7 @@ export interface LoginSuccessResponse {
     email: string;
     isVerified: boolean;
     twoFactorEnabled: boolean;
+    hasPassword: boolean;
   };
 }
 

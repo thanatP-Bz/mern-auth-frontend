@@ -48,7 +48,13 @@ const Register = () => {
       dispatch({
         type: "REGISTER",
         payload: {
-          user: data.user, // ← Just pass the whole user object
+          user: {
+            _id: data.user._id,
+            name: data.user.name,
+            email: data.user.email,
+            twoFactorEnabled: data.user.twoFactorEnabled,
+            hasPassword: data.user.hasPassword,
+          }, // ← Just pass the whole user object
         },
       });
 
