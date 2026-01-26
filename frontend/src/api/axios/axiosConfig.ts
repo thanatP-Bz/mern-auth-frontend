@@ -1,33 +1,48 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:4004", // ✅ Use env variable
+  baseURL: "http://localhost:4004",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000, // 10 second timeout
 });
 
-///for debugging header//
+// Request interceptor with full URL logging
 api.interceptors.request.use(
   (config) => {
-    console.log("making request to:", config.url);
+    const fullUrl = `${config.baseURL}${config.url}`;
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("🚀 Making request");
+    console.log("Method:", config.method?.toUpperCase());
+    console.log("Full URL:", fullUrl);
+    console.log("Data:", config.data);
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
     return config;
   },
   (error) => {
+    console.error("❌ Request setup error:", error);
     return Promise.reject(error);
   },
 );
 
 api.interceptors.response.use(
   (response) => {
-    // If response is successful, just return it
+    console.log("✅ Response received:", response.status);
     return response;
   },
   async (error) => {
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("❌ Error occurred");
+    console.log("Error code:", error.code);
+    console.log("Error message:", error.message);
+    console.log("Response status:", error.response?.status);
+    console.log("Response data:", error.response?.data);
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
     const originalRequest = error.config;
 
-    // ⭐ CRITICAL: Don't intercept the refresh-token endpoint itself!
     if (originalRequest.url?.includes("/refresh-token")) {
       console.error("❌ Refresh token failed, user needs to login again");
       localStorage.removeItem("user");
@@ -35,27 +50,17 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Check if error is 401 (Unauthorized) and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark that we're retrying to prevent infinite loop
+      originalRequest._retry = true;
 
       try {
         console.log("🔄 Access token expired, attempting to refresh...");
-
-        // Call refresh endpoint
-        // The refreshToken cookie is sent AUTOMATICALLY by the browser!
         await api.post("/api/auth/refresh-token");
-
         console.log(
           "✅ Token refreshed successfully, retrying original request",
         );
-
-        // The new accessToken cookie is set AUTOMATICALLY by backend!
-        // Now retry the original request with the new token
         return api(originalRequest);
       } catch (refreshError) {
-        // This catch block should rarely be hit now because we handle
-        // refresh-token failures at the top
         console.error("❌ Refresh failed in catch block");
         localStorage.removeItem("user");
         window.location.href = "/login";
@@ -63,7 +68,6 @@ api.interceptors.response.use(
       }
     }
 
-    // For other errors, just log and reject
     console.error("API error:", error.response?.data?.message || error.message);
     return Promise.reject(error);
   },
