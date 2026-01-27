@@ -55,7 +55,7 @@ const router = createBrowserRouter([
       { path: "verify-email", element: <VerifyEmail /> },
       { path: "forget-password", element: <ForgetPassword /> },
       { path: "reset-password/:token", element: <ResetPassword /> },
-      { path: "/auth/callback", element: <OAuthCallback /> },
+      { path: "/oauth/callback", element: <OAuthCallback /> },
     ],
   },
 
