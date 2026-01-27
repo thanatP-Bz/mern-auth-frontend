@@ -107,7 +107,7 @@ const TaskForm = () => {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full" size="lg">
+          <Button type="submit" className="w-full cursor-pointer" size="lg">
             <Plus className="w-4 h-4 mr-2" />
             Add Task
           </Button>

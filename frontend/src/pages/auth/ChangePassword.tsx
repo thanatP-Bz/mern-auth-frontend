@@ -55,13 +55,6 @@ const ChangePassword = () => {
                 No password to change. Your account is secured through Google.
               </p>
             </div>
-
-            <Link
-              to="/home"
-              className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center"
-            >
-              Return to Home
-            </Link>
           </div>
         </div>
       </div>

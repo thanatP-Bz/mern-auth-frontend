@@ -98,7 +98,7 @@ const VerifyEmail = () => {
                 </Button>
                 <Link
                   to="/login"
-                  className="block text-sm text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+                  className="block text-sm text-white hover:text-indigo-700 font-medium hover:underline"
                 >
                   Already verified? Go to Login
                 </Link>

@@ -124,9 +124,9 @@ const TaskCard = ({ tasks }: TaskCardProps) => {
                   onClick={() => deleteHandle(task.id)}
                   size="sm"
                   variant="destructive"
-                  className="flex-1"
+                  className="flex-1 cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4 " />
                   <span>Delete</span>
                 </Button>
               </div>

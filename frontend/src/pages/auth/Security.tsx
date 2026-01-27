@@ -3,7 +3,8 @@ import Enable2FAModal from "@/components/Enable2FAModal";
 import Disable2FAModal from "@/components/Disable2FAModal";
 import RegenerateBackupCodesModal from "@/components/RegenerateBackupCodesModal";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { Shield, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Shield, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Security = () => {
   const [showEnableModal, setShowEnableModal] = useState(false);
@@ -22,6 +23,14 @@ const Security = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Security Settings
         </h1>
+
+        <Link
+          to="/home"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
+        </Link>
 
         {/* 2FA Card */}
         <div className="bg-white rounded-lg shadow p-6">

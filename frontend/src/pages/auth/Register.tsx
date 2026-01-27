@@ -127,9 +127,11 @@ const Register = () => {
           type="submit"
           onClick={handleResendEmail}
           disabled={loading}
-          className="cursor-pointer"
+          className="mt-4 w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors duration-200"
         >
-          didn't get email? resend
+          {loading
+            ? "Sending..."
+            : "Didn't get email? Wait 1 minute then resend"}
         </button>
       </div>
     );
