@@ -1,10 +1,12 @@
 const GoogleLoginButton = () => {
   const handleGoogleLogin = () => {
     // ✅ Use environment variable instead of hardcoded URL
-    const backendUrl = import.meta.env
-      .VITE_BACKEND_URL; /* || "http://localhost:4004"; */
+    const backendUrl =
+      "https://mern-auth-backend-unrd.onrender.com"; /* || "http://localhost:4004"; */
     window.location.href = `${backendUrl}/api/oauth/google`;
   };
+
+  console.log(import.meta.env.VITE_BACKEND_URL);
 
   return (
     <button

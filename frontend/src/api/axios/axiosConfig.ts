@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL /* || "http://localhost:4004" */,
+  baseURL:
+    "https://mern-auth-backend-unrd.onrender.com" /* || "http://localhost:4004" */,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
