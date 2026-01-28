@@ -19,7 +19,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { Verify2FA } from "./pages/auth/Verify2FA";
 import Security from "./pages/auth/Security";
-import OAuthCallback from "./pages/auth/OauthCallback";
+import OauthCallback from "./pages/auth/OauthCallback";
 
 //change route
 
@@ -57,7 +57,7 @@ const router = createBrowserRouter([
       { path: "verify-email", element: <VerifyEmail /> },
       { path: "forget-password", element: <ForgetPassword /> },
       { path: "reset-password/:token", element: <ResetPassword /> },
-      { path: "oauth/callback", element: <OAuthCallback /> },
+      { path: "oauth/callback", element: <OauthCallback /> },
     ],
   },
 
