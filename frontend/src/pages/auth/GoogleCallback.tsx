@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { toast } from "sonner";
 
-const OauthCallback = () => {
+const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { dispatch } = useAuthContext();
@@ -58,4 +58,4 @@ const OauthCallback = () => {
   );
 };
 
-export default OauthCallback;
+export default GoogleCallback;
