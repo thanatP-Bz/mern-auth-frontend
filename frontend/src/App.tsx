@@ -21,6 +21,8 @@ import { Verify2FA } from "./pages/auth/Verify2FA";
 import Security from "./pages/auth/Security";
 import OAuthCallback from "./pages/auth/OauthCallback";
 
+//change route
+
 // Root redirect
 const RootRedirect = () => {
   const { user } = useAuthContext();
