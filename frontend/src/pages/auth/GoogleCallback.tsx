@@ -1,3 +1,5 @@
+// frontend/src/pages/auth/GoogleCallback.tsx
+
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthContext } from "@/hooks/useAuthContext";
@@ -9,31 +11,52 @@ const GoogleCallback = () => {
   const { dispatch } = useAuthContext();
 
   useEffect(() => {
-    const userData = searchParams.get("user");
-    const error = searchParams.get("error");
+    const exchangeToken = async () => {
+      const token = searchParams.get("token");
+      const error = searchParams.get("error");
 
-    if (error) {
-      toast.error("Google login failed. Please try again.");
-      navigate("/login");
-      return;
-    }
+      if (error) {
+        toast.error("Google login failed. Please try again.");
+        navigate("/login");
+        return;
+      }
 
-    if (userData) {
-      // ✅ Cookies are already set by backend!
-      // Just parse user data and update context
-      const user = JSON.parse(decodeURIComponent(userData));
+      if (token) {
+        try {
+          // ✅ Exchange temp token for httpOnly cookies
+          const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/oauth/exchange-token`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include", // ✅ Critical for cookies
+              body: JSON.stringify({ token }),
+            },
+          );
 
-      dispatch({
-        type: "LOGIN",
-        payload: { user },
-      });
+          if (!response.ok) throw new Error("Token exchange failed");
 
-      toast.success("Logged in with Google successfully!");
-      navigate("/home", { replace: true });
-    } else {
-      toast.error("Invalid OAuth response");
-      navigate("/login");
-    }
+          const data = await response.json();
+
+          dispatch({
+            type: "LOGIN",
+            payload: { user: data.user },
+          });
+
+          toast.success("Logged in with Google successfully!");
+          navigate("/home", { replace: true });
+        } catch (error) {
+          console.log(error);
+          toast.error("Authentication failed");
+          navigate("/login");
+        }
+      } else {
+        toast.error("Invalid OAuth response");
+        navigate("/login");
+      }
+    };
+
+    exchangeToken();
   }, [searchParams, navigate, dispatch]);
 
   return (
