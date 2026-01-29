@@ -24,15 +24,12 @@ const GoogleCallback = () => {
     }
 
     if (accessToken && refreshToken && userData) {
-      // ✅ Set cookies with secure flags for production
-      const isProduction = window.location.protocol === "https:";
-      const cookieOptions = `path=/; max-age=${60 * 60 * 24 * 7}; ${isProduction ? "secure; sameSite=strict" : "sameSite=lax"}`;
-
-      document.cookie = `accessToken=${accessToken}; ${cookieOptions}`;
-      document.cookie = `refreshToken=${refreshToken}; ${cookieOptions}`;
+      // ✅ Set cookies with SameSite=None for cross-origin
+      document.cookie = `accessToken=${accessToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
+      document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
 
       if (sessionId) {
-        document.cookie = `sessionId=${sessionId}; ${cookieOptions}`;
+        document.cookie = `sessionId=${sessionId}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
       }
 
       // Parse and store user data
