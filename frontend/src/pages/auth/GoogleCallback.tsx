@@ -23,17 +23,20 @@ const GoogleCallback = () => {
       return;
     }
 
+    // frontend/src/pages/auth/GoogleCallback.tsx
+
     if (accessToken && refreshToken && userData) {
-      // ✅ Set cookies with SameSite=None for cross-origin
-      document.cookie = `accessToken=${accessToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
-      document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
+      // ✅ Store in localStorage instead of cookies
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
       if (sessionId) {
-        document.cookie = `sessionId=${sessionId}; path=/; max-age=${60 * 60 * 24 * 7}; secure; sameSite=none`;
+        localStorage.setItem("sessionId", sessionId);
       }
 
       // Parse and store user data
       const user = JSON.parse(decodeURIComponent(userData));
+      localStorage.setItem("user", JSON.stringify(user));
 
       dispatch({
         type: "LOGIN",
