@@ -11,52 +11,44 @@ const GoogleCallback = () => {
   const { dispatch } = useAuthContext();
 
   useEffect(() => {
-    const exchangeToken = async () => {
-      const token = searchParams.get("token");
-      const error = searchParams.get("error");
+    const accessToken = searchParams.get("accessToken");
+    const refreshToken = searchParams.get("refreshToken");
+    const sessionId = searchParams.get("sessionId");
+    const userData = searchParams.get("user");
+    const error = searchParams.get("error");
 
-      if (error) {
-        toast.error("Google login failed. Please try again.");
-        navigate("/login");
-        return;
+    if (error) {
+      toast.error("Google login failed. Please try again.");
+      navigate("/login");
+      return;
+    }
+
+    if (accessToken && refreshToken && userData) {
+      // ✅ Set cookies with secure flags for production
+      const isProduction = window.location.protocol === "https:";
+      const cookieOptions = `path=/; max-age=${60 * 60 * 24 * 7}; ${isProduction ? "secure; sameSite=strict" : "sameSite=lax"}`;
+
+      document.cookie = `accessToken=${accessToken}; ${cookieOptions}`;
+      document.cookie = `refreshToken=${refreshToken}; ${cookieOptions}`;
+
+      if (sessionId) {
+        document.cookie = `sessionId=${sessionId}; ${cookieOptions}`;
       }
 
-      if (token) {
-        try {
-          // ✅ Exchange temp token for httpOnly cookies
-          const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/oauth/exchange-token`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include", // ✅ Critical for cookies
-              body: JSON.stringify({ token }),
-            },
-          );
+      // Parse and store user data
+      const user = JSON.parse(decodeURIComponent(userData));
 
-          if (!response.ok) throw new Error("Token exchange failed");
+      dispatch({
+        type: "LOGIN",
+        payload: { user },
+      });
 
-          const data = await response.json();
-
-          dispatch({
-            type: "LOGIN",
-            payload: { user: data.user },
-          });
-
-          toast.success("Logged in with Google successfully!");
-          navigate("/home", { replace: true });
-        } catch (error) {
-          console.log(error);
-          toast.error("Authentication failed");
-          navigate("/login");
-        }
-      } else {
-        toast.error("Invalid OAuth response");
-        navigate("/login");
-      }
-    };
-
-    exchangeToken();
+      toast.success("Logged in with Google successfully!");
+      navigate("/home", { replace: true });
+    } else {
+      toast.error("Invalid OAuth response");
+      navigate("/login");
+    }
   }, [searchParams, navigate, dispatch]);
 
   return (
