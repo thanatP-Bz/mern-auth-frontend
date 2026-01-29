@@ -9,9 +9,6 @@ const GoogleCallback = () => {
   const { dispatch } = useAuthContext();
 
   useEffect(() => {
-    const accessToken = searchParams.get("accessToken");
-    const refreshToken = searchParams.get("refreshToken");
-    const sessionId = searchParams.get("sessionId"); // ✅ NEW: Get sessionId
     const userData = searchParams.get("user");
     const error = searchParams.get("error");
 
@@ -21,20 +18,11 @@ const GoogleCallback = () => {
       return;
     }
 
-    if (accessToken && refreshToken && userData) {
-      // Store tokens in cookies
-      document.cookie = `accessToken=${accessToken}; path=/; max-age=${60 * 60 * 24 * 7}`;
-      document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${60 * 60 * 24 * 7}`;
-
-      // ✅ NEW: Store sessionId cookie
-      if (sessionId) {
-        document.cookie = `sessionId=${sessionId}; path=/; max-age=${60 * 60 * 24 * 7}`;
-      }
-
-      // Parse user data from URL
+    if (userData) {
+      // ✅ Cookies are already set by backend!
+      // Just parse user data and update context
       const user = JSON.parse(decodeURIComponent(userData));
 
-      // Update auth context
       dispatch({
         type: "LOGIN",
         payload: { user },
