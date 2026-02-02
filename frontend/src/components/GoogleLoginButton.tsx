@@ -2,7 +2,7 @@ const GoogleLoginButton = () => {
   const handleGoogleLogin = () => {
     // ✅ Use environment variable instead of hardcoded URL
     const backendUrl =
-      "https://mern-auth-backend-unrd.onrender.com"; /* || "http://localhost:4004"; */
+      "https://mern-auth-backend-unrd.onrender.com"; /* ||"http://localhost:4004";  */
     window.location.href = `${backendUrl}/api/oauth/google`;
   };
 
