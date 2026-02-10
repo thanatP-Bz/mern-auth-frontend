@@ -43,9 +43,9 @@ export const Verify2FA = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(
-        err.response?.data?.message || useBackupCode
+        err.response?.data?.message /* || useBackupCode
           ? "Invalid backup code"
-          : "Invalid 2FA code",
+          : "Invalid 2FA code", */,
       );
     } finally {
       setLoading(false);
