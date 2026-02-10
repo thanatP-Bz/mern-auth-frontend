@@ -23,7 +23,7 @@ const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // ✅ Check if user signed in with Google (no password)
-  if (!user?.hasPassword) {
+  if (user?.authProvider && user?.authProvider !== "local") {
     return (
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
